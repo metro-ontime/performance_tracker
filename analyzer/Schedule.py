@@ -1,20 +1,24 @@
 import pandas as pd
 from datetime import timedelta
-from App.classes.Stations import splitStopIds
+from .Stations import splitStopIds
 
 class Schedule:
-    def __init__(self, date, line_id, full_schedule):
+    def __init__(self, date, line_id, full_schedule, trips):
         self.date = date
-        self.times = makeSchedule(full_schedule, line_id, date)
+        self.times = makeSchedule(full_schedule, line_id, date, trips)
 
-def makeSchedule(full_schedule, line_id, date):
-    full_schedule = splitStopIds(full_schedule, 'stop_id') #don't do this here, unnecessary repetition
-    line_schedule = full_schedule.groupby('line_id').get_group(line_id)
-    line_schedule = scheduleTimeToDateTime(line_schedule, date)
+def makeSchedule(schedule, line_id, date, trips):
+    schedule = filter_by_trips(schedule, trips)
+    schedule = splitStopIds(schedule, 'stop_id') #don't do this here, unnecessary repetition
+    schedule = full_schedule.groupby('line_id').get_group(line_id)
+    schedule = scheduleTimeToDateTime(schedule, date)
     return line_schedule
 
+def filter_by_trips(schedule, trips):
+    schedule.loc[:, 'today'] = schedule.trip_id.apply(lambda trip: trip in trips)
+    return schedule[schedule.today == True]
+
 def scheduleTimeToDateTime(schedule, date):
-    
     schedule['arrival_hour'] = schedule.arrival_time.apply(lambda row: int(str(row)[0:2]))
     schedule['arrival_min'] = schedule.arrival_time.apply(lambda row: int(str(row)[3:5]))
 
