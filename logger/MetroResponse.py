@@ -12,7 +12,7 @@ def get_vehicles(data, timestamp):
     obj = json.loads(data.read())
     df = pd.DataFrame(obj['items'])
     df = matchColumnNames(df)
-    df.loc[:, 'query_time'] = timestamp
+    df['query_time'] = df.vehicle_id.apply(lambda row: timestamp)
     return df[['vehicle_id', 'direction', 'query_time', 'seconds_since_report', 'latitude', 'longitude', 'predictable']]
 
 def get_timestamp(data):

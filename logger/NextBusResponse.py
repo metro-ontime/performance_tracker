@@ -11,7 +11,7 @@ class NextBusResponse:
 def get_vehicles(data, timestamp):
     df = pd.DataFrame(data['vehicle'])
     df = matchColumnNames(df)
-    df.loc[:, 'query_time'] = timestamp
+    df['query_time'] = df.vehicle_id.apply(lambda row: timestamp)
     return df[['vehicle_id', 'direction', 'query_time', 'seconds_since_report', 'latitude', 'longitude', 'predictable']]
 
 def get_timestamp(data):
