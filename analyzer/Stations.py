@@ -4,7 +4,7 @@ from pandas import Series
 def prepareStations(stations, track):
     stations = toGDF(stations)
     stations = findRelativePositions(stations, track)
-    stations = splitStopIds(stations, 'id')
+    stations = split_stop_ids(stations, 'id')
     return stations
 
 def split_stop_ids(stationList, id_field):

@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import timedelta
-from .Stations import splitStopIds
+from .Stations import split_stop_ids
 
 class Schedule:
     def __init__(self, date, line_id, full_schedule, trips):
@@ -9,10 +9,10 @@ class Schedule:
 
 def makeSchedule(schedule, line_id, date, trips):
     schedule = filter_by_trips(schedule, trips)
-    schedule = splitStopIds(schedule, 'stop_id') #don't do this here, unnecessary repetition
-    schedule = full_schedule.groupby('line_id').get_group(line_id)
+    schedule = split_stop_ids(schedule, 'stop_id') #don't do this here, unnecessary repetition
+    schedule = schedule.groupby('line_id').get_group(line_id)
     schedule = scheduleTimeToDateTime(schedule, date)
-    return line_schedule
+    return schedule
 
 def filter_by_trips(schedule, trips):
     schedule.loc[:, 'today'] = schedule.trip_id.apply(lambda trip: trip in trips)

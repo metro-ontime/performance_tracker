@@ -1,5 +1,5 @@
-from App.classes.Track import create_ordered_line
-from App.classes.Stations import prepareStations
+from .Track import create_ordered_line
+from .Stations import prepareStations
 import pandas as pd
 
 class Line:

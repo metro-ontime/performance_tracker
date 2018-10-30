@@ -1,13 +1,14 @@
 from shapely.geometry import Point
-from App.classes.geoHelpers import findRelativePositions
 import geopandas as gpd
 import pandas as pd
+from datetime import timedelta
+from .geoHelpers import findRelativePositions
 
 def rawLogToGDF(log):
-    #log['datetime'] = pd.to_datetime(log['report_date'] + ' ' + log['report_time'])
-    log = log.drop_duplicates(subset=['datetime', 'lat', 'lon', 'vehicle_id'])
-    #log = log.drop(['report_date', 'report_time', 'id'], axis=1)
-    geometry = [Point(xy) for xy in zip(log.lon, log.lat)]
+    log.loc[:,'report_time'] = log.query_time - log.seconds_since_report
+    log.loc[:,'datetime'] = pd.to_datetime(log.report_time, unit='s', origin='unix') - timedelta(hours=7)
+    log = log.drop_duplicates(subset=['datetime', 'latitude', 'longitude', 'vehicle_id'])
+    geometry = [Point(xy) for xy in zip(log.longitude, log.latitude)]
     return gpd.GeoDataFrame(log, crs = {'init': 'epsg:4326'}, geometry = geometry)
   
 def selectAnalysisWindow(log, start_date, end_date):

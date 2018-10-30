@@ -6,16 +6,16 @@ from .Tracker import selectAnalysisWindow
 from .Calendar import Calendar
 from .Trips import Trips
 
-def parse(date, timemin, timemax):
+def load_and_parse_schedule(date, timemin, timemax):
     today = date
     start_datetime = today + ' ' + timemin
     end_datetime = today + ' ' + timemax
 
-    track = json.load(open('shapefiles/gold_northbound/goldJSON.json'))
-    stations = json.load(open('misc/GoldLineStationIds.json'))['items']
+    track = json.load(open('GTFS/goldJSON.json'))
+    stations = json.load(open('GTFS/GoldLineStationIds.json'))['items']
     full_schedule = read_csv('GTFS/stop_times.txt')
 
-    calendar = Calendar('GTFS/calendar.txt'):
+    calendar = Calendar('GTFS/calendar.txt')
     services_running_today = list(calendar.on_date(today).service_id)
     trips = Trips('GTFS/trips.txt')
     trips_running_today = trips.filter_by_service_id(services_running_today)
