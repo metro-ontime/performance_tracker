@@ -5,13 +5,14 @@ from datetime import datetime
 class NextBusResponse:
     def __init__(self, data):
         obj = json.loads(data.read())
-        self.vehicles = get_vehicles(obj)
         self.timestamp = get_timestamp(obj)
+        self.vehicles = get_vehicles(obj, self.timestamp)
 
-def get_vehicles(data):
+def get_vehicles(data, timestamp):
     df = pd.DataFrame(data['vehicle'])
     df = matchColumnNames(df)
-    return df[['vehicle_id', 'direction', 'seconds_since_report', 'latitude', 'longitude']]
+    df.loc[:, 'query_time'] = timestamp
+    return df[['vehicle_id', 'direction', 'query_time', 'seconds_since_report', 'latitude', 'longitude', 'predictable']]
 
 def get_timestamp(data):
     return int(data['lastTime']['time']) / 1000

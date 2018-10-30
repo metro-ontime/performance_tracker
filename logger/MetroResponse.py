@@ -5,14 +5,15 @@ import pytz
 
 class MetroResponse:
     def __init__(self, data):
-        self.vehicles = get_vehicles(data)
         self.timestamp = get_timestamp(data)
+        self.vehicles = get_vehicles(data, self.timestamp)
 
-def get_vehicles(data):
+def get_vehicles(data, timestamp):
     obj = json.loads(data.read())
     df = pd.DataFrame(obj['items'])
     df = matchColumnNames(df)
-    return df[['vehicle_id', 'direction', 'seconds_since_report', 'latitude', 'longitude']]
+    df.loc[:, 'query_time'] = timestamp
+    return df[['vehicle_id', 'direction', 'query_time', 'seconds_since_report', 'latitude', 'longitude', 'predictable']]
 
 def get_timestamp(data):
     time_string = data.info()['Date']
