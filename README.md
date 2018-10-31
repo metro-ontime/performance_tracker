@@ -24,9 +24,8 @@ Possible future directions for this project include:
 ## For Contributors:
 
 What We Need:
- - Developers (Python and/or GIS systems knowledge -- HIGH PRIORITY)
- - Transport Engineers (to assist in development of arrival time estimation algorithm -- HIGH PRIORITY)
- - Front End Developers (React, data visualization)
+ - Programmers with Python/GIS/Pandas or related experience
+ - Front End Developers (React, D3)
  - QA Testers (spotting bugs, feedback on site-design -- currently low priority)
 
 This web application is built on a python backend, which logs and processes vehicle tracking data from Metro's real-time API. The front end is a React app hosted on a static server (GitHub or Netlify - TBC) that is recompiled daily as new performance data becomes available on our python backend. 
@@ -101,44 +100,11 @@ Requires: QGIS (https://qgis.org/en/site/)
 
 You can set up our logging script to track trains locally on any Unix machine running Python 3.6, SQLite3, and cron. 
 
-### Example: set up train tracking every 3 minutes on Linux:
+### Example: set up train tracking every 1 minutes on Linux:
 
 1. Edit crontab:
-`*/3 * * * * cd path/to/analysis_folder/App && bash ./log_job.sh`
+`*/1 * * * * cd path/to/this_directory && bash ./log_job.sh`
 2. Start cron service:
 `systemctl start cron`
 
 Currently, you must edit log_job.sh to choose the line you wish to track - we will rewrite this to log all rail lines once we are ready to scale up.
-
-### Front End
-## Feature Summary:
-
-Line:
- - Gold
-    Daily Performance Summary:
-     - Today:
-        No. of trains that were scheduled
-        No. of trains that actually ran
-        No. of trains that ran on time:
-          - 1 minute tolerance
-          - 2 minute tolerance
-          - 3 minute tolerance
-          - 4 minute tolerance
-          - 5 minute tolerance
-     - This Week
-     - This Month
-     - This Year
- - Blue
- - Red/Purple
- etc.
-
-Average Time Between Trains
- - Time period A (4am - 6am)
-    Today
-    This Week
-    This Month
-    This Year
- - Time period B (6am - 8am)
- etc.
-
-

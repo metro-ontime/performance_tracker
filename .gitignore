@@ -1,6 +1,5 @@
 # Project Specific:
 
-GTFS
 logger/__pycache__
 analyzer/__pycache__
 data
