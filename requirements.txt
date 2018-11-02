@@ -1,6 +1,6 @@
-jupyter==4.4.0
+-e git+https://github.com/jswhit/pyproj.git#egg=pyproj
+jupyterlab
 matplotlib==3.0.1
 geopandas==0.4.0
-cython==0.29
 cartopy==0.16.0
 geopy==1.17.0
