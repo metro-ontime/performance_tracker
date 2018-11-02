@@ -25,13 +25,11 @@ class Marey:
       for index, vehicle in self.otherTrips:
         otherTimes = vehicle['datetime'].values
         otherDistances = vehicle['relative_position'].values
-        #print(otherTimes)
         ax1.plot(otherDistances, otherTimes, lw=2, color='#999999')
         
       for index, vehicle in self.trips:
         times = vehicle['datetime'].values
         distances = vehicle['relative_position'].values
-        #print(times)
         ax1.plot(distances, times, lw=2, color=self.colors[index])
       
       for station in self.stations.itertuples():

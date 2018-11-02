@@ -1,6 +1,6 @@
 import urllib.request
-from .MetroResponse import MetroResponse
-from .NextBusResponse import NextBusResponse
+from .metroResponse import MetroResponse
+from .nextBusResponse import NextBusResponse
 
 def get_vehicles_from_Metro(agency, line):
     url = f"http://api.metro.net/agencies/{agency}/routes/{line}/vehicles/"

@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import timedelta
-from .Stations import split_stop_ids
+from .stations import split_stop_ids
 
 class Schedule:
     def __init__(self, date, line_id, full_schedule, trips):

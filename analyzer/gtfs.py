@@ -1,10 +1,10 @@
 import json
 from pandas import read_csv
-from .Schedule import Schedule
-from .Line import Line
-from .Tracker import selectAnalysisWindow
-from .Calendar import Calendar
-from .Trips import Trips
+from .schedule import Schedule
+from .line import Line
+from .tracker import selectAnalysisWindow
+from .calendar import Calendar
+from .trips import Trips
 
 def load_and_parse_schedule(date, timemin, timemax):
     today = date
