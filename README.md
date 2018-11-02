@@ -37,18 +37,19 @@ pip install -r requirements.txt
 jupyter lab
 ```
 
-Not all dependencies (cython and numpy) and included in requirements.txt since pip has issues installing all dependencies at once.
-General Workflow:
+Not all dependencies (cython and numpy) are included in requirements.txt since pip has issues installing all dependencies at once.
+
+### General Workflow:
 
 1. Run `log_job.sh` regularly over a time frame - say once per minute over 3 hours. See cron example further down in this README for details.
 2. Run the scripts in `analyze_vehicle_positions.ipynb` to analyze the logs - setting the correct date and time based on the time frame logged.
 3. Download a new schedule into data/GTFS by running:
-```
-cd data/GTFS
-wget https://gitlab.com/LACMTA/gtfs_rail/raw/master/gtfs_rail.zip
-unzip gtfs_rail.zip
-```
-**Note:** The schedule is updated daily (around 1am), so schedule data needs to redownloaded and parsed every day. Schedules are changed mainly due to track maintenance.
+  ```
+  cd data/GTFS
+  wget https://gitlab.com/LACMTA/gtfs_rail/raw/master/gtfs_rail.zip
+  unzip gtfs_rail.zip
+  ```
+  **Note:** The schedule is updated daily (around 1am), so schedule data needs to redownloaded and parsed every day. Schedules are changed mainly due to track maintenance.
 4. Run the schedule scripts in `schedule.ipynb`, also inputing the correct date and time frame.
 5. Run the comparison scripts in `comparison.ipynb` - this will output a Marey diagram showing the tracked train positions alongside imaginary 'pace trains' following the schedule.
 
