@@ -1,8 +1,8 @@
 # Metro Performance Monitor
 
-### A Health App for the Los Angeles Metro Rail system
+### A Health App for the Los Angeles Metro Rail System
 
-This website, incubated at Hack for LA, tracks LA Metro trains and provides up to date statistics summarizing daily, weekly, monthly and annual performance. Our mission is to monitor and report the number of both on-time and late train arrivals on an ongoing basis for all Metro rail lines in Los Angeles. These are:
+This project, incubated at Hack for LA, tracks LA Metro trains and provides up to date statistics summarizing daily, weekly, monthly and annual performance. Our mission is to monitor and report the number of both on-time and late train arrivals on an ongoing basis for all Metro rail lines in Los Angeles. These are:
  - Blue Line
  - Red Line
  - Green Line
@@ -21,7 +21,6 @@ Possible future directions for this project include:
 - We do not plan to duplicate/compete with existing services that provide upcoming arrival predictions. NextBus, Google Maps and Transit already provide these services. We focus on historical data only.
  - We will not produce any new 'raw' data - for example like Transit's approach of gathering crowd-sourced positioning data from its users to support and improve Metro's predictions.
 
-# For Contributors:
 ## Getting Started:
 
 To run the python scripts we recommend using a virtual Python environment. 
@@ -37,7 +36,9 @@ pip install numpy
 pip install -r requirements.txt
 jupyter lab
 ```
-Workflow:
+
+Not all dependencies (cython and numpy) and included in requirements.txt since pip has issues installing all dependencies at once.
+General Workflow:
 
 1. Run `log_job.sh` regularly over a time frame - say once per minute over 3 hours. See cron example further down in this README for details.
 2. Run the scripts in `analyze_vehicle_positions.ipynb` to analyze the logs - setting the correct date and time based on the time frame logged.
@@ -45,10 +46,21 @@ Workflow:
 ```
 cd data/GTFS
 wget https://gitlab.com/LACMTA/gtfs_rail/raw/master/gtfs_rail.zip
-unzip *
+unzip gtfs_rail.zip
 ```
+**Note:** The schedule is updated daily (around 1am), so schedule data needs to redownloaded and parsed every day. Schedules are changed mainly due to track maintenance.
 4. Run the schedule scripts in `schedule.ipynb`, also inputing the correct date and time frame.
 5. Run the comparison scripts in `comparison.ipynb` - this will output a Marey diagram showing the tracked train positions alongside imaginary 'pace trains' following the schedule.
+
+## Contributing:
+
+The process for contributing to the performance tracker is as follows:
+1. **Read** the currently open Issues to find out where we need help.
+2. **Fork** this repository to your GitHub account.
+3. **Discuss** with core contributors the feature you plan to add or bug you are tackling. You can have a conversation with us via the issue tracker OR on our Slack channel.
+4. **Write** your code or documentation. Here is a Python style guide we try to follow: https://www.python.org/dev/peps/pep-0008/
+5. **Push** your changes to your forked repository.
+6. Make a **Pull Request** to this repository.
 
 ## This Repository:
 
@@ -59,18 +71,17 @@ unzip *
 
 ## Analysis Methodology:
 
-LA Metro's real-time API (https://developer.metro.net/introduction/realtime-api-overview/) provides the "positions of Metro vehicles on their routes in real time." Our performance monitor logs the output of this API, storing each vehicle's coordinates along with its direction, vehicle_id and the time of its last position update in a database (PostgreSQL - TBC). We then reconstruct each vehicle's journey and estimate the actual times that it arrived at each stop, which we can then compare to the schedule. This process is not without flaws, so we are encouraging debate over how to improve our algorithms and measure train performance in a way that is most useful to riders. For example, depending on the time of day, a more useful metric of Metro performance might be the average wait time between services. If trains are not strictly following the schedule but are running relatively frequently - does that matter to riders?
+LA Metro's real-time API (https://developer.metro.net/introduction/realtime-api-overview/) provides the "positions of Metro vehicles on their routes in real time." After some exploration of this API and also the NextBus real-time vehicle location API (also mentioned at that Metro developer webpage), we found that the NextBus data appears to be more accurate and up-to-date when polled more frequently (i.e. once per 60 seconds). We request the most recently reported location of all vehicles on a train line by making the following API call, where {line} is the train line number:
 
-Our understanding of Metro's current reporting system for measuring late arrivals is this:
-Any train arriving at a station more than FIVE minutes after it is scheduled is recorded manually by Metro staff. 
+http://webservices.nextbus.com/service/publicJSONFeed?command=vehicleLocations&a=lametro-rail&r={line}
 
-At peak times when trains might be running 5 or 6 minutes apart - they could simply disregard the schedule and still claim 100% on time arrivals. This is one reason we believe that a more transparent and precise performance measurement tool would be valuable.
+Our performance monitor logs the response of this API call, storing each vehicle's coordinates along with its direction, vehicle_id and the time of its last position update in a database. We then reconstruct each vehicle's journey and estimate the actual times that it arrived at each station, which we can then compare to the schedule. This process is not without flaws, so we are encouraging debate over how to improve our algorithms and measure train performance in a way that is most useful to riders. For example, a more useful metric of Metro performance for commuters might be the average wait time between services rather than strict adherence to scheduled arrival/departure times. Fortunately, we should be able to calculate several performance indicators from the tracking data, to provide a thorough picture of Metro performance.
 
 ## Train Tracking Logs
 
 You can set up our logging script to track trains locally on any Unix machine running Python 3.6, SQLite3, and cron. 
 
-### Example: set up train tracking every 1 minutes on Linux:
+### Example: set up train tracking every 1 minutes on Unix:
 #### **Note:** We need to update this to work with the python virtual environment.
 
 1. Edit crontab:
