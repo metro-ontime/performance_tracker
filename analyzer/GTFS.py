@@ -11,13 +11,13 @@ def load_and_parse_schedule(date, timemin, timemax):
     start_datetime = today + ' ' + timemin
     end_datetime = today + ' ' + timemax
 
-    track = json.load(open('GTFS/goldJSON.json'))
-    stations = json.load(open('GTFS/GoldLineStationIds.json'))['items']
-    full_schedule = read_csv('GTFS/stop_times.txt')
+    track = json.load(open('data/GTFS/goldJSON.json'))
+    stations = json.load(open('data/GTFS/GoldLineStationIds.json'))['items']
+    full_schedule = read_csv('data/GTFS/stop_times.txt')
 
-    calendar = Calendar('GTFS/calendar.txt')
+    calendar = Calendar('data/GTFS/calendar.txt')
     services_running_today = list(calendar.on_date(today).service_id)
-    trips = Trips('GTFS/trips.txt')
+    trips = Trips('data/GTFS/trips.txt')
     trips_running_today = trips.filter_by_service_id(services_running_today)
 
     gold_schedule_today = Schedule(today, '804', full_schedule, trips_running_today)
