@@ -40,10 +40,10 @@ jupyter lab
 
 ## This Repository:
 
-./logger: class files for logging vehicle positions
-./analyzer: class files for analyzing vehicle position data
-./data: All data dumps and temporary log files.
-./data/GTFS: LA Metro GTFS data is downloaded to this directory daily from their gitlab: https://gitlab.com/LACMTA/gtfs_rail
+- ./logger: class files for logging vehicle positions
+- ./analyzer: class files for analyzing vehicle position data
+- ./data: All data dumps and temporary log files.
+- ./data/GTFS: LA Metro GTFS data is downloaded to this directory daily from their gitlab: https://gitlab.com/LACMTA/gtfs_rail
 
 ## Analysis Methodology:
 
