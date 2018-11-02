@@ -2,15 +2,7 @@
 
 ### A Health App for the Los Angeles Metro Rail System
 
-This project, incubated at Hack for LA, tracks LA Metro trains and provides up to date statistics summarizing daily, weekly, monthly and annual performance. Our mission is to monitor and report the number of both on-time and late train arrivals on an ongoing basis for all Metro rail lines in Los Angeles. These are:
- - Blue Line
- - Red Line
- - Green Line
- - Gold Line
- - Purple Line
- - Expo Line
-
-By publishing these statistics and open-sourcing our methodology, we aim to give riders an accurate and unvarnished picture of the system's state over time. Hopefully, this will correct any public misperception of Metro's track record and help inform decision-makers when assessing future improvements to the system.
+This project, incubated at Hack for LA, tracks LA Metro trains and provides up to date statistics summarizing daily, weekly, monthly and annual performance. Our mission is to monitor and report the number of both on-time and late train arrivals on an ongoing basis for all Metro rail lines in Los Angeles. By publishing these statistics and open-sourcing our methodology, we aim to give riders an accurate and unvarnished picture of the system's state over time. Hopefully, this will correct any public misperception of Metro's track record and help inform decision-makers when assessing future improvements to the system.
 
 Possible future directions for this project include:
  - Benchmarking the LA Metro system against other transit systems worldwide. Open-sourcing our analysis is the first step towards beginning a discussion on how to measure and compare transit systems worldwide. Due to budget constraints and ageing infrastructure, perfect GPS tracking and precise reporting of arrival times is not commonly found in rail systems. We want to develop low-cost and reliable methods to estimate train arrival times at stations. 
@@ -20,6 +12,13 @@ Possible future directions for this project include:
 - Currently, monitoring the LA bus network is outside the scope of this project. 
 - We do not plan to duplicate/compete with existing services that provide upcoming arrival predictions. NextBus, Google Maps and Transit already provide these services. We focus on historical data only.
  - We will not produce any new 'raw' data - for example like Transit's approach of gathering crowd-sourced positioning data from its users to support and improve Metro's predictions.
+
+## Contact Us:
+
+We have an ongoing discussion on the Hack For LA Slack. Sign up here: https://hackforla-slack.herokuapp.com/
+Once you are signed up, click on "Channels" and search for '#metro-ontime' to join our chat.
+We meet weekly on Tuesday nights at Hack For LA in Downtown Los Angeles. Details are here: http://www.hackforla.org/
+You can also contact us via the issue tracker in this repository.
 
 ## Getting Started:
 
