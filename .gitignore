@@ -3,6 +3,7 @@
 logger/__pycache__
 analyzer/__pycache__
 data
+.aws
 
 # General:
 
