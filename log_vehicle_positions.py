@@ -1,7 +1,7 @@
 import sys
 import os
 from datetime import datetime
-from logger.grabber import get_vehicles_from_Metro, get_vehicles_from_NextBus
+from logger.grabber import get_vehicles_from_NextBus
 
 if len(sys.argv) != 3:
     print('Please provide the agency and line number')
