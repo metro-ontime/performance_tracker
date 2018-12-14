@@ -5,11 +5,11 @@
 This project, incubated at Hack for LA, tracks LA Metro trains and provides up to date statistics summarizing daily, weekly, monthly and annual performance. Our mission is to monitor and report the number of both on-time and late train arrivals on an ongoing basis for all Metro rail lines in Los Angeles. By publishing these statistics and open-sourcing our methodology, we aim to give riders an accurate and unvarnished picture of the system's state over time. Hopefully, this will correct any public misperception of Metro's track record and help inform decision-makers when assessing future improvements to the system.
 
 Possible future directions for this project include:
- - Benchmarking the LA Metro system against other transit systems worldwide. Open-sourcing our analysis is the first step towards beginning a discussion on how to measure and compare transit systems worldwide. Due to budget constraints and ageing infrastructure, perfect GPS tracking and precise reporting of arrival times is not commonly found in rail systems. We want to develop low-cost and reliable methods to estimate train arrival times at stations. 
+ - Benchmarking the LA Metro system against other transit systems worldwide. Open-sourcing our analysis is the first step towards beginning a discussion on how to measure and compare transit systems worldwide. Due to budget constraints and ageing infrastructure, perfect GPS tracking and precise reporting of arrival times is not commonly found in rail systems. We want to develop low-cost and reliable methods to estimate train arrival times at stations.
  - Monitoring causes of delays and providing additional statistics on these.
 
 ### Non-Goals:
-- Currently, monitoring the LA bus network is outside the scope of this project. 
+- Currently, monitoring the LA bus network is outside the scope of this project.
 - We do not plan to duplicate/compete with existing services that provide upcoming arrival predictions. NextBus, Google Maps and Transit already provide these services. We focus on historical data only.
  - We will not produce any new 'raw' data - for example like Transit's approach of gathering crowd-sourced positioning data from its users to support and improve Metro's predictions.
 
@@ -22,7 +22,7 @@ You can also contact us via the issue tracker in this repository.
 
 ## Getting Started:
 
-To run the python scripts we recommend using a virtual Python environment. 
+To run the python scripts we recommend using a virtual Python environment.
 The following example uses `venv` built into Python 3.
 Run these commands to download and begin working with this repo:
 ```
@@ -53,6 +53,20 @@ Not all dependencies (cython and numpy) are included in requirements.txt since p
 4. Run the schedule scripts in `schedule.ipynb`, also inputing the correct date and time frame.
 5. Run the comparison scripts in `comparison.ipynb` - this will output a Marey diagram showing the tracked train positions alongside imaginary 'pace trains' following the schedule.
 
+### Docker:
+
+1. Build image
+
+```bash
+docker build -t performance_tracker .
+```
+
+2. Run a script
+
+```bash
+docker run -it --rm -v /Users/kvn219/performance_tracker/data:/src/data --name my_docker_name performance_tracker python log_vehicle_positions.py lametro-rail 804
+```
+
 ## Contributing:
 
 The process for contributing to the performance tracker is as follows:
@@ -80,7 +94,7 @@ Our performance monitor logs the response of this API call, storing each vehicle
 
 ## Train Tracking Logs
 
-You can set up our logging script to track trains locally on any Unix machine running Python 3.6, SQLite3, and cron. 
+You can set up our logging script to track trains locally on any Unix machine running Python 3.6, SQLite3, and cron.
 
 ### Example: set up train tracking every 1 minutes on Unix:
 #### **Note:** We need to update this to work with the python virtual environment.
