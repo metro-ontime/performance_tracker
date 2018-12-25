@@ -1,17 +1,20 @@
 import sys
 import os
-from datetime import datetime
-from logger.grabber import get_vehicles_from_Metro, get_vehicles_from_NextBus
+import requests
+import pendulum
+from logger.nextBusData import NextBusData
 
 if len(sys.argv) != 3:
-    print('Please provide the agency and line number')
+    print("Please provide the agency and line number")
     exit()
 
 agency = str(sys.argv[1])
-agency_sanitized = agency.replace('-', '_')
 line = str(sys.argv[2])
 
-nextbusData = get_vehicles_from_NextBus(agency, line)
-os.makedirs("data/vehicles", exist_ok=True)
-now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
-nextbusData.vehicles.to_csv(f"data/vehicles/{now}.csv")
+now = pendulum.now("UTC")
+url = f"http://webservices.nextbus.com/service/publicJSONFeed?command=vehicleLocations&a={agency}&r={line}"
+nextBusResponse = requests.get(url)
+data = NextBusData(nextBusResponse.json())
+print(data.vehicles)
+# os.makedirs("data/vehicles", exist_ok=True)
+# data.vehicles.to_csv(f"data/vehicles/{now.format("YYYY-MM-DDTHH:mm:ssZ")}.csv")

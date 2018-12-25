@@ -78,6 +78,10 @@ http://webservices.nextbus.com/service/publicJSONFeed?command=vehicleLocations&a
 
 Our performance monitor logs the response of this API call, storing each vehicle's coordinates along with its direction, vehicle_id and the time of its last position update in a database. We then reconstruct each vehicle's journey and estimate the actual times that it arrived at each station, which we can then compare to the schedule. This process is not without flaws, so we are encouraging debate over how to improve our algorithms and measure train performance in a way that is most useful to riders. For example, a more useful metric of Metro performance for commuters might be the average wait time between services rather than strict adherence to scheduled arrival/departure times. Fortunately, we should be able to calculate several performance indicators from the tracking data, to provide a thorough picture of Metro performance.
 
+## Notes on Time, Time Formats & Timezones
+
+All stored DateTime objects should be in RFC3339 format, with the timezone set to UTC. We use the Pendulum library for Python to keep this consistent. Datetimes only need to be converted to local timezones on the front end. Metro's schedule data (from the GTFS) requires special treatment as one "day" is longer than 24 hours. Schedule trips have a "schedule_time" column - containing the original time as given by the GTFS file - and a "real_time" column - containing the datetime in RFC3339 UTC when that trip should occur.
+
 ## Train Tracking Logs
 
 You can set up our logging script to track trains locally on any Unix machine running Python 3.6, SQLite3, and cron. 
