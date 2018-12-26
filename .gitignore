@@ -1,8 +1,7 @@
 # Project Specific:
 
-logger/__pycache__
-analyzer/__pycache__
-data
+performance_tracker/data/vehicle_tracking
+performance_tracker/data/GTFS
 .aws
 
 # General:
