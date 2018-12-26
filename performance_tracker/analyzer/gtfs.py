@@ -6,21 +6,31 @@ from .tracker import selectAnalysisWindow
 from .calendar import Calendar
 from .trips import Trips
 
-def load_and_parse_schedule(date, timemin, timemax):
-    today = date
-    start_datetime = today + ' ' + timemin
-    end_datetime = today + ' ' + timemax
 
-    track = json.load(open('data/GTFS/goldJSON.json'))
-    stations = json.load(open('data/GTFS/GoldLineStationIds.json'))['items']
-    full_schedule = read_csv('data/GTFS/stop_times.txt')
-
-    calendar = Calendar('data/GTFS/calendar.txt')
-    services_running_today = list(calendar.on_date(today).service_id)
-    trips = Trips('data/GTFS/trips.txt')
+def load_and_parse_schedule(line_no, start_datetime, end_datetime):
+    start_date = start_datetime.format("YYYY-MM-DD")
+    end_date = end_datetime.format("YYYY-MM-DD")
+    full_schedule = read_csv("data/GTFS/stop_times.txt")
+    calendar = Calendar("data/GTFS/calendar.txt")
+    trips = Trips("data/GTFS/trips.txt")
+    services_running_today = calendar.services_running_on(start_date)
     trips_running_today = trips.filter_by_service_id(services_running_today)
 
-    gold_schedule_today = Schedule(today, '804', full_schedule, trips_running_today)
-    gold_line = Line(804, track, stations, gold_schedule_today)
+    track = load_track(line_no)
+    stations = load_station_names(line_no)
+    schedule_today = Schedule(start_date, line_no, full_schedule, trips_running_today)
+    line = Line(line_no, track, stations, schedule_today)
 
-    return selectAnalysisWindow(gold_line.getScheduleWithCoordinates(), start_datetime, end_datetime)
+    return selectAnalysisWindow(line.getScheduleWithCoordinates(), start_date, end_date)
+
+
+def load_track(line_no):
+    with open(f"data/line_info/{line_no}/shape.json") as track_data:
+        track = json.load(track_data)
+    return track
+
+
+def load_station_names(line_no):
+    with open(f"data/line_info/{line_no}/stations.json") as station_data:
+        names = json.load(station_data)["items"]
+    return names

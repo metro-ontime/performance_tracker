@@ -5,8 +5,8 @@ import pandas as pd
 from analyzer.nextBusData import NextBusData
 from analyzer.datetimefs import DateTimeFS, construct_filename
 
-start_datetime = pendulum.datetime(2018, 12, 26, 0, tz="UTC")
-end_datetime = pendulum.datetime(2018, 12, 26, 3, tz="UTC")
+start_datetime = pendulum.today("UTC")
+end_datetime = pendulum.now("UTC")
 
 line = 804
 agency = "lametro-rail"
