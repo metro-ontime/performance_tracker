@@ -1,3 +1,4 @@
+import os
 import re
 import glob
 import pendulum
@@ -10,15 +11,16 @@ import pendulum
 
 class DateTimeFS:
     def __init__(self, path_to_fs):
-        self.root = path_to_fs + "/"
+        self.root = path_to_fs
 
     def get_all_dates(self):
-        date_paths = glob.glob(self.root + "*")
+        path_to_search = os.path.join(self.root, "*")
+        date_paths = glob.glob(path_to_search)
         return sorted([extract_date(self.root, path) for path in date_paths])
 
     def get_datetimes_by_date(self, datetime):
-        path_base = self.root + datetime.format("YYYY-MM-DD") + "/"
-        time_paths = glob.glob(path_base + "*")
+        path_base = os.path.join(self.root, datetime.format("YYYY-MM-DD"))
+        time_paths = glob.glob(os.path.join(path_base, "*"))
         return sorted([extract_datetime(self.root, path) for path in time_paths])
 
     def get_datetimes_in_range(self, start, end):
@@ -29,7 +31,7 @@ class DateTimeFS:
             filter(lambda date: date >= start_date and date <= end_date, all_dates)
         )
         for date in select_dates:
-            files = glob.glob(self.root + date.format("YYYY-MM-DD") + "/*")
+            files = glob.glob(os.path.join(self.root, date.format("YYYY-MM-DD"), "*"))
             datetimes = self.get_datetimes_by_date(date)
             select_datetimes = list(
                 filter(
@@ -48,27 +50,26 @@ class DateTimeFS:
 
 def construct_filename(path_base, datetime, extension):
     return (
-        path_base
-        + datetime.format("YYYY-MM-DD")
-        + "/"
-        + datetime.format("HH:mm:ss")
+        os.path.join(
+            path_base, datetime.format("YYYY-MM-DD"), datetime.format("HH:mm:ss")
+        )
         + extension
     )
 
 
 def extract_datetime(path_to_dt, full_path):
-    string_to_match = f"(?:{path_to_dt})([0-9]+-[0-9]+-[0-9]+)/([0-9]+:[0-9]+:[0-9]+)"
+    string_to_match = f"(?:{path_to_dt}/)([0-9]+-[0-9]+-[0-9]+)/([0-9]+:[0-9]+:[0-9]+)"
     dateinfo = re.match(string_to_match, full_path).groups()
     return pendulum.from_format(dateinfo[0] + "T" + dateinfo[1], "YYYY-MM-DDTHH:mm:ss")
 
 
 def extract_date(path_to_dt, full_path):
-    string_to_match = f"(?:{path_to_dt})([0-9]+-[0-9]+-[0-9]+)"
+    string_to_match = f"(?:{path_to_dt}/)([0-9]+-[0-9]+-[0-9]+)"
     dateinfo = re.match(string_to_match, full_path).groups()
     return pendulum.from_format(dateinfo[0], "YYYY-MM-DD")
 
 
 def extract_time(path_to_dt, full_path):
-    string_to_match = f"(?:{path_to_dt})([0-9]+:[0-9]+:[0-9]+)"
+    string_to_match = f"(?:{path_to_dt}/)([0-9]+:[0-9]+:[0-9]+)"
     dateinfo = re.match(string_to_match, full_path).groups()
     return pendulum.from_format(dateinfo[0], "HH:mm:ss")
