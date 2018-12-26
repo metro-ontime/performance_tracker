@@ -2,8 +2,8 @@ import os
 import json
 import pendulum
 import pandas as pd
-from logger.nextBusData import NextBusData
-from classes.datetimefs import DateTimeFS, construct_filename
+from analyzer.nextBusData import NextBusData
+from analyzer.datetimefs import DateTimeFS, construct_filename
 
 start_datetime = pendulum.datetime(2018, 12, 26, 0, tz="UTC")
 end_datetime = pendulum.datetime(2018, 12, 26, 3, tz="UTC")
