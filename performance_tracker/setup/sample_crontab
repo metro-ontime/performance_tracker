@@ -1,0 +1,1 @@
+*/1 * * * * cd ~/performance_tracker/performance_tracker && bash query_vehicles.sh

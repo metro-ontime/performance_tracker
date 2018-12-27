@@ -1,0 +1,15 @@
+#!/bin/bash
+while read oldrev newrev ref
+do
+  if [[ $ref =~ .*/master$ ]];
+  then
+    echo "Master ref received.  Deploying master branch to production..."
+    git checkout -f
+    cd performance_tracker
+    crontab setup/sample_crontab
+  else
+    echo "Ref $ref received. Doing nothing: only the master branch may be deployed on this server."
+  fi
+
+done
+
