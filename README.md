@@ -53,6 +53,11 @@ Not all dependencies (cython and numpy) are included in requirements.txt since p
 4. Run the schedule scripts in `schedule.ipynb`, also inputing the correct date and time frame.
 5. Run the comparison scripts in `comparison.ipynb` - this will output a Marey diagram showing the tracked train positions alongside imaginary 'pace trains' following the schedule.
 
+### Setup Git Hook (on deployment server):
+
+There is a sample post-receive git hook in `performance-tracker/setup/post-receive.sample`.
+Run the setup.sh script in that directory to copy it to your git hooks.
+
 ## Contributing:
 
 The process for contributing to the performance tracker is as follows:
