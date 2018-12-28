@@ -5,7 +5,7 @@ do
   then
     echo "Master ref received.  Deploying master branch to production..."
     git --work-tree=~/performance_tracker-worktree --git-dir=~/performance_tracker-gitdir checkout -f
-    crontab ~/performance_tracker/performance_tracker/setup/sample_crontab
+    crontab ~/performance_tracker-worktree/performance_tracker/setup/sample_crontab
     echo "New crontab config:"
     crontab -l
     echo "System updated & running"

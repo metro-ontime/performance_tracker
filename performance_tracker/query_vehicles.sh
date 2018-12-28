@@ -1,10 +1,10 @@
 #!/bin/bash
 
 source ../env/bin/activate
-python ./query_vehicles.py lametro-rail 801
-python ./query_vehicles.py lametro-rail 802
-python ./query_vehicles.py lametro-rail 803
-python ./query_vehicles.py lametro-rail 804
-python ./query_vehicles.py lametro-rail 805
-python ./query_vehicles.py lametro-rail 806
+python3 ./query_vehicles.py lametro-rail 801
+python3 ./query_vehicles.py lametro-rail 802
+python3 ./query_vehicles.py lametro-rail 803
+python3 ./query_vehicles.py lametro-rail 804
+python3 ./query_vehicles.py lametro-rail 805
+python3 ./query_vehicles.py lametro-rail 806
 deactivate
