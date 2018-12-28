@@ -1,1 +1,1 @@
-*/1 * * * * cd ~/performance_tracker-worktree/performance_tracker && bash query_vehicles.sh
+*/1 * * * * cd ~/performance_tracker-worktree/performance_tracker && bash query_vehicles.sh ~/performance_tracker-worktree
