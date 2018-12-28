@@ -1,5 +1,6 @@
 jupyterlab
 matplotlib==3.0.1
 geopandas==0.4.0
-cartopy==0.16.0
 geopy==1.17.0
+requests
+pendulum

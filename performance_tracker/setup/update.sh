@@ -1,10 +1,8 @@
 #!/bin/bash
 
-cd $1
-python3 -m venv venv
-source venv/bin/activate
-pip install cython
-pip install numpy
-pip install pyproj
-pip install -r requirements.txt
-deactivate
+# Provide path of repo root directory as cmd line arg
+
+docker build -t metro $1
+crontab $1/performance_tracker/setup/sample_crontab
+echo "New crontab config:"
+crontab -l
