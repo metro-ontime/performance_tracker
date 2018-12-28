@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../env/bin/activate
+source ../venv/bin/activate
 python3 ./query_vehicles.py lametro-rail 801
 python3 ./query_vehicles.py lametro-rail 802
 python3 ./query_vehicles.py lametro-rail 803
