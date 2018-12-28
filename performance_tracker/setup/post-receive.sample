@@ -10,13 +10,7 @@ do
     crontab ~/performance_tracker-worktree/performance_tracker/setup/sample_crontab
     echo "New crontab config:"
     crontab -l
-    cd ~/performance_tracker-worktree
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install cython
-    pip install numpy
-    pip install -r requirements.txt
-    deactivate
+    bash ~/performance_tracker-worktree/performance_tracker/setup/update.sh ~/performance_tracker-worktree
     echo "System updated & running"
   else
     echo "Ref $ref received. Doing nothing: only the master branch may be deployed on this server."
