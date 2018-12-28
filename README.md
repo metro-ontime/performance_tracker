@@ -32,6 +32,7 @@ python3 -m venv env
 source env/bin/activate
 pip install cython
 pip install numpy
+pip install pyproj
 pip install -r requirements.txt
 jupyter lab
 ```
