@@ -9,10 +9,4 @@ COPY ./requirements.txt /src/requirements.txt
 
 WORKDIR /src
 
-RUN pip install cython && \
-  pip install numpy && \
-  pip install pyproj && \
-  pip install cartopy && \
-  pip install -r /src/requirements.txt
-
-RUN rm /src/requirements.txt
+RUN pip install -r /src/requirements.txt
