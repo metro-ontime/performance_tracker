@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Please provide root directory of performance_tracker repo as cmd line arg
+# Please provide username and root directory of performance_tracker repo as cmd line args
 
-[ -z "$var" ] && export USER=ubuntu
-docker run -u $(id -u ${USER}):$(id -u ${USER}) -it --rm -v $1:/src --name testrun metro python performance_tracker/query_vehicles.py
+docker run -u $(id -u $1):$(id -u $1) --rm -v $2:/src metro python performance_tracker/query_vehicles.py
+echo "query_vehicles.sh completed:" $(date) >> ~/logs/querylog

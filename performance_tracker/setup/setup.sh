@@ -1,5 +1,6 @@
 mkdir ~/performance_tracker-worktree
 mkdir ~/performance_tracker-gitdir
+mkdir ~/logs
 git init --bare ~/performance_tracker-gitdir
 cp post-receive.sample ~/performance_tracker-gitdir/hooks/post-receive
 chmod +x ~/performance_tracker-gitdir/hooks/post-receive

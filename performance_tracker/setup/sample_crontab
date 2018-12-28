@@ -1,1 +1,0 @@
-*/1 * * * * bash ~/performance_tracker-worktree/performance_tracker/query_vehicles.sh ~/performance_tracker-worktree

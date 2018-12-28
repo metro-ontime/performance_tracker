@@ -1,0 +1,1 @@
+*/1 * * * * bash ~/performance_tracker-worktree/performance_tracker/query_vehicles.sh ubuntu ~/performance_tracker-worktree
