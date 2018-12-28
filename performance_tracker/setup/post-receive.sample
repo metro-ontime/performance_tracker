@@ -4,7 +4,7 @@ do
   if [[ $ref =~ .*/master$ ]];
   then
     echo "Master ref received.  Deploying master branch to production..."
-    git --work-tree=~/performance_tracker --git-dir=~/performance_tracker-git checkout -f
+    git --work-tree=~/performance_tracker-worktree --git-dir=~/performance_tracker-gitdir checkout -f
     crontab ~/performance_tracker/performance_tracker/setup/sample_crontab
     echo "New crontab config:"
     crontab -l
