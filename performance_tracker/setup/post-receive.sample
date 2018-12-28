@@ -1,10 +1,12 @@
 #!/bin/bash
+unset GIT_DIR
+unset GIT_WORK_TREE
 while read oldrev newrev ref
 do
   if [[ $ref =~ .*/master$ ]];
   then
     echo "Master ref received.  Deploying master branch to production..."
-    git --work-tree=~/performance_tracker-worktree --git-dir=~/performance_tracker-gitdir checkout -f
+    git --work-tree=~/performance_tracker-worktree --git-dir=~/performance_tracker-gitdir checkout -f master
     crontab ~/performance_tracker-worktree/performance_tracker/setup/sample_crontab
     echo "New crontab config:"
     crontab -l
