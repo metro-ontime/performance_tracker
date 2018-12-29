@@ -1,1 +1,1 @@
-*/1 * * * * bash ~/performance_tracker-worktree/performance_tracker/query_vehicles.sh ubuntu ~/performance_tracker-worktree
+*/1 * * * * cd ~/performance_tracker-worktree/performance_tracker && bash query_vehicles.sh $LOGNAME

@@ -3,6 +3,7 @@
 performance_tracker/data/vehicle_tracking
 performance_tracker/data/GTFS
 performance_tracker/data/schedule
+performance_tracker/logs
 .aws
 
 # General:
