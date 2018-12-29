@@ -43,12 +43,16 @@ All file changes will be saved even after the Docker container is destroyed.
 The app is a set of python scripts (located at `performance_tracker/performance_tracker`), which run at varying intervals. 
 You may run these either manually or via a cronjob. The following example uses `query_vehicles.sh`.
 If we want to get the current location of vehicles on a line, from the repo root directory we execute:
-`performance_tracker/query_vehicles.sh <YOUR USERNAME> $(pwd)`
+```
+performance_tracker/query_vehicles.sh <YOUR USERNAME> $(pwd)
+```
 
 The username argument is necessary to ensure Docker runs as your user and not as root.
 Now if you go to `./performance_tracker/data/vehicle_tracking/raw` you will see the files that have been created for each line.
 You can set up a cronjob easily to pull vehicle location data on a schedule. A cronjob set to get data every minute will follow this template:
-`*/1 * * * * bash path/to/this_repository/performance_tracker/query_vehicles.sh <YOUR USERNAME> path/to/this_repository`
+```
+*/1 * * * * bash path/to/this_repository/performance_tracker/query_vehicles.sh <YOUR USERNAME> path/to/this_repository
+```
 
 ### Setting up a server with git hook:
 
@@ -65,9 +69,12 @@ cd performance_tracker/performance_tracker/setup
 bash setup.sh
 ```
 6. Then on your local machine add the server git directory (performance_tracker-gitdir) as a git remote.
-`git remote add production <YOUR SERVER SSH ALIAS>:~/performance_tracker-gitdir`
+```
+git remote add production <YOUR SERVER SSH ALIAS>:~/performance_tracker-gitdir
+```
 7. Push master to production:
 `git push production master`
+
 This should execute the Docker build script and set the cronjob correctly.
 
 
