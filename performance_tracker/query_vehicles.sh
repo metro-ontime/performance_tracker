@@ -7,7 +7,7 @@ if [ $# -eq 0 ]
     exit 1
 fi
 
-docker run -u $(id -u $1):$(id -g $1) --rm -v $(pwd):/src metro python scripts/query_vehicles.py
+docker run -u $(id -u $1):$(id -g $1) --rm -v $(pwd):/src metro python query_vehicles.py
 if [ $? -eq 0 ]; then
   echo "Successfully downloaded vehicle data:" $(date) >> $(pwd)/logs/querylog
 else
