@@ -1,27 +1,5 @@
 import pandas as pd
 from datetime import timedelta
-from .stations import split_stop_ids
-
-
-class Schedule:
-    def __init__(self, date, line_id, full_schedule, trips):
-        self.date = date
-        self.times = makeSchedule(full_schedule, line_id, date, trips)
-
-
-def makeSchedule(schedule, line_id, date, trips):
-    schedule = filter_by_trips(schedule, trips)
-    schedule = split_stop_ids(
-        schedule, "stop_id"
-    )  # don't do this here, unnecessary repetition
-    schedule = schedule.groupby("line_id").get_group(str(line_id))
-    schedule = scheduleTimeToDateTime(schedule, date)
-    return schedule
-
-
-def filter_by_trips(schedule, trips):
-    schedule.loc[:, "today"] = schedule.trip_id.apply(lambda trip: trip in trips)
-    return schedule[schedule.today == True]
 
 
 def scheduleTimeToDateTime(schedule, date):

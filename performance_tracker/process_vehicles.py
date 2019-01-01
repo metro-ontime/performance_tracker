@@ -5,8 +5,8 @@ import pandas as pd
 from analyzer.nextBusData import NextBusData
 from helpers.datetimefs import DateTimeFS, construct_filename
 
-start_datetime = pendulum.today("UTC")
-end_datetime = pendulum.now("UTC")
+start_datetime = pendulum.today("America/Los_Angeles").add(hours=3)
+end_datetime = pendulum.now("America/Los_Angeles")
 
 line = 804
 agency = "lametro-rail"
@@ -15,7 +15,9 @@ path_base = f"data/vehicle_tracking/raw/{line}_{agency}"
 
 dtfs = DateTimeFS(path_base)
 
-datetimes = dtfs.get_datetimes_in_range(start_datetime, end_datetime)
+datetimes = dtfs.get_datetimes_in_range(
+    start_datetime.in_tz("UTC"), end_datetime.in_tz("UTC")
+)
 
 
 def process_frame(datetime):
