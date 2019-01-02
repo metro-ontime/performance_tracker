@@ -1,0 +1,9 @@
+,stop_id,stop_name,geometry,relative_position
+0,80214,Union Station - Metro Red & Purple Lines,POINT (-118.234249 34.056197),0.01514297957020392
+1,80213,Civic Center / Grand Park Station,POINT (-118.246057 34.0549),0.17144889067124047
+2,80212,Pershing Square Station,POINT (-118.251259 34.049316),0.2598499926260723
+3,80211,7th Street / Metro Center Station - Metro Red & Purple Lines,POINT (-118.258682 34.048634),0.35923141823530363
+4,80210,Westlake / MacArthur Park Station,POINT (-118.274879 34.056368),0.5683563365725627
+5,80209,Wilshire / Vermont Station,POINT (-118.290082 34.062701),0.7647397890307871
+6,80215,Wilshire / Normandie Station,POINT (-118.301458 34.061753),0.9024688420630531
+7,80216,Wilshire / Western Station,POINT (-118.308756 34.061689),0.9870037229732435
