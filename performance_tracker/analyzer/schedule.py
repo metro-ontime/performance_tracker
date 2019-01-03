@@ -22,6 +22,7 @@ def scheduleTimeToDateTime(schedule, date):
     )
 
     schedule = pd.concat([today, tomorrow])
+    schedule = schedule.drop(["arrival_hour", "arrival_min"], axis=1)
     return schedule
 
 

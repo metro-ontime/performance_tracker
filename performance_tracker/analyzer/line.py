@@ -5,11 +5,9 @@ import pandas as pd
 
 class Line:
     def __init__(self, line_id, track, stations, schedule):
-        self.id = str(line_id)
-        # This should be unnecessary once line files are rebuilt correctly and saved
-        self.track = create_ordered_line(track)
-        # Also should be unnecessary if station list is rebuilt correctly
-        self.stations = prepareStations(stations, self.track)
+        self.id = line_id
+        self.track = track
+        self.stations = stations
         self.schedule = schedule
 
     def getScheduleWithCoordinates(self):

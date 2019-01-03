@@ -25,8 +25,8 @@ class DateTimeFS:
 
     def get_datetimes_in_range(self, start, end):
         all_dates = self.get_all_dates()
-        start_date = pendulum.from_format(start.format("YYYY-MM-DD"), "YYYY-MM-DD")
-        end_date = pendulum.from_format(end.format("YYYY-MM-DD"), "YYYY-MM-DD")
+        start_date = start.start_of("day")
+        end_date = end.start_of("day")
         select_dates = list(
             filter(lambda date: date >= start_date and date <= end_date, all_dates)
         )
