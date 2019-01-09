@@ -7,3 +7,4 @@ geopandas==0.4.0
 geopy==1.17.0
 requests
 pendulum
+boto3
