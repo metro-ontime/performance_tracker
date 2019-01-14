@@ -1,9 +1,8 @@
 from helpers.upload import upload
 
 
-# date = pendulum.now("UTC").start_of("day")
-# date_formatted = date.format("YYYY-MM-DD")
-date_formatted = "2018-12-31"
+date = pendulum.now("UTC").start_of("day")
+date_formatted = date.format("YYYY-MM-DD")
 agency = "lametro-rail"
 
 for line in range(801, 807):

@@ -1,4 +1,5 @@
 import glob
+import pendulum
 import os
 import pandas as pd
 import geopandas as gpd
@@ -9,7 +10,8 @@ from analyzer.geoHelpers import findRelativePositions
 track_stations = {}
 stops = pd.read_csv("data/GTFS/stops.txt")
 agency = "lametro-rail"
-datestring = "2018-01-02"  # Can be the same date you last ran query_shedule.py
+# Run this file only after running process_schedule.py on the same day
+datestring = pendulum.today("America/Los_Angeles").format("YYYY-MM-DD")
 
 for line_no in range(801, 807):
     trackpaths = glob.glob(f"data/line_info/{line_no}/*.geojson")
@@ -37,12 +39,12 @@ for line_no in range(801, 807):
 # Blue line (801) has a different set of stations for each direction
 # due to a small loop.
 # We remove them here:
-edit = track_stations["801_northbound"]
-track_stations["801_northbound"] = edit[
+edit = track_stations["801_directionA"]
+track_stations["801_directionA"] = edit[
     (edit["stop_id"].isin(["80153", "80154"]) == False)
 ]
-edit = track_stations["801_southbound"]
-track_stations["801_southbound"] = edit[(edit["stop_id"].isin(["80102"]) == False)]
+edit = track_stations["801_directionB"]
+track_stations["801_directionB"] = edit[(edit["stop_id"].isin(["80102"]) == False)]
 
 for name in track_stations.keys():
     track_stations[name] = (
