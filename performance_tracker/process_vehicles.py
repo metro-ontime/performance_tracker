@@ -21,6 +21,8 @@ for line in range(801, 807):
         schedule_on_this_date.datetime.min(), tz="America/Los_Angeles"
     )
     if now < first_scheduled_arrival:
+        # i.e. if now is earlier than the first scheduled train on this date,
+        # we must be still on yesterday's timetable
         schedule_yesterday = pd.read_csv(
             f"data/schedule/{line}_{agency}/{yesterday}.csv"
         )
