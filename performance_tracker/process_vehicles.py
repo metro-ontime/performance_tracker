@@ -15,8 +15,24 @@ today = now.format("YYYY-MM-DD")
 yesterday = pendulum.yesterday("America/Los_Angeles").format("YYYY-MM-DD")
 end_datetime = now
 
+
+def process_frame(datetime, path_base):
+    source_path = construct_filename(path_base, datetime, ".json")
+    with open(source_path, "r") as infile:
+        raw_data = json.load(infile)
+    preprocessed = NextBusData(raw_data)
+    # no need to run any more processing
+    # than necessary inside inner loop.
+    return preprocessed.vehicles
+
+
 for line in range(801, 807):
-    schedule_on_this_date = pd.read_csv(f"data/schedule/{line}_{agency}/{today}.csv")
+    schedule_path = f"data/schedule/{line}_{agency}/{today}.csv"
+    if not os.path.exists(schedule_path):
+        schedule_path = f"data/schedule/{line}_{agency}/{yesterday}.csv"
+
+    schedule_on_this_date = pd.read_csv(schedule_path)
+
     first_scheduled_arrival = pendulum.parse(
         schedule_on_this_date.datetime.min(), tz="America/Los_Angeles"
     )
@@ -49,25 +65,30 @@ for line in range(801, 807):
     with open(track_directionB_path) as infile:
         track_directionB = json.load(infile)
 
-    def process_frame(datetime):
-        source_path = construct_filename(path_base, datetime, ".json")
-        with open(source_path, "r") as infile:
-            raw_data = json.load(infile)
-        preprocessed = NextBusData(raw_data)
-        # no need to run any more processing
-        # than necessary inside loop.
-        return preprocessed.vehicles
-
-    array = [process_frame(datetime) for datetime in datetimes]
+    array = [process_frame(datetime, path_base) for datetime in datetimes]
     df = pd.concat(array)
+    df = df.drop_duplicates(
+        subset=["report_time", "latitude", "longitude", "vehicle_id"]
+    )
+    df = df[df["predictable"] == "true"]
     df["latitude"] = pd.to_numeric(df.latitude)
     df["longitude"] = pd.to_numeric(df.longitude)
     df = toGDF(df)
     df["relative_position"] = findRelativePositions(df, track_directionA)
     df["datetime"] = pd.to_datetime(df["report_time"], utc=True)
-    df = df[df["predictable"] == "true"]
-    df = df.reset_index()
+    df = df.reset_index(drop=True)  # necessary both before and after getTrips
     df = getTrips(df)
+    df = df.reset_index(drop=True)  # necessary both before and after getTrips
+    df = df[
+        [
+            "datetime",
+            "vehicle_id",
+            "trip_id",
+            "direction",
+            "geometry",
+            "relative_position",
+        ]
+    ]
 
     processed_path = f"data/vehicle_tracking/processed/{line}_{agency}"
     os.makedirs(processed_path, exist_ok=True)

@@ -24,18 +24,24 @@ class DateTimeFS:
         return sorted([extract_datetime(self.root, path) for path in time_paths])
 
     def get_datetimes_in_range(self, start, end):
+        # filter by DATES YYYY-MM-DD first to save time
         all_dates = self.get_all_dates()
         start_date = start.start_of("day")
-        end_date = end.start_of("day")
+        end_date = end.end_of("day")
         select_dates = list(
             filter(lambda date: date >= start_date and date <= end_date, all_dates)
         )
+        # Then filter by time within dates
+        select_datetimes = list()
         for date in select_dates:
             files = glob.glob(os.path.join(self.root, date.format("YYYY-MM-DD"), "*"))
             datetimes = self.get_datetimes_by_date(date)
-            select_datetimes = list(
-                filter(
-                    lambda datetime: datetime >= start and datetime <= end, datetimes
+            select_datetimes.extend(
+                list(
+                    filter(
+                        lambda datetime: datetime >= start and datetime <= end,
+                        datetimes,
+                    )
                 )
             )
         return select_datetimes
