@@ -20,7 +20,10 @@ def process_frame(datetime, path_base):
     source_path = construct_filename(path_base, datetime, ".json")
     with open(source_path, "r") as infile:
         raw_data = json.load(infile)
-    preprocessed = NextBusData(raw_data)
+    try:
+        preprocessed = NextBusData(raw_data)
+    except:
+        return None
     # no need to run any more processing
     # than necessary inside inner loop.
     return preprocessed.vehicles
@@ -66,7 +69,8 @@ for line in range(801, 807):
         track_directionB = json.load(infile)
 
     array = [process_frame(datetime, path_base) for datetime in datetimes]
-    df = pd.concat(array)
+    cleaned = [x for x in array if x is not None]
+    df = pd.concat(cleaned)
     df = df.drop_duplicates(
         subset=["report_time", "latitude", "longitude", "vehicle_id"]
     )

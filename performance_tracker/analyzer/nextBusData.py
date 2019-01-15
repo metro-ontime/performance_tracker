@@ -10,7 +10,12 @@ class NextBusData:
 
 
 def get_vehicles(data, last_report_time):
-    df = pd.DataFrame(data["vehicle"])
+    try:
+        df = pd.DataFrame(data["vehicle"])
+    except:
+        if type(data["vehicle"]) is dict:
+            df = pd.DataFrame(data["vehicle"], index=[0])
+
     df = matchColumnNames(df)
     min_secs_since_report = min(list(map(int, list(df["seconds_since_report"]))))
     df["report_time"] = df.apply(
