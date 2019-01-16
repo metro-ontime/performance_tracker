@@ -15,7 +15,9 @@ else
   exit 1
 fi
 
-docker run -u $(id -u $1):$(id -g $1) --rm -v $(pwd):/src metro python process_schedule.py
+# We limit cpu usage to 50% as this process is resource intensive 
+# and we don't mind if it takes a few minutes extra to run
+docker run --cpus=".5" -u $(id -u $1):$(id -g $1) --rm -v $(pwd):/src metro python process_schedule.py
 if [ $? -eq 0 ]; then
   echo "Successfully processed schedule data:" $(date)
 else

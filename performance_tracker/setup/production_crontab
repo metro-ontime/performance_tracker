@@ -1,2 +1,11 @@
+# Vehicles and predictions are queried every minute, continuously
 */1 * * * * cd ~/performance_tracker-worktree/performance_tracker && bash query_vehicles.sh $LOGNAME >> ~/logs/vehiclesLog
 */1 * * * * cd ~/performance_tracker-worktree/performance_tracker && bash query_predictions.sh $LOGNAME >> ~/logs/predictionsLog
+
+# We download and process the schedule every day at 10am UTC. This will be 3am in LA, or 2am during Daylight Saving Time
+# Metro updates the GTFS data at 1am LA time every day, so we should hopefully always get the latest data successfully...
+0 10 * * * cd ~/performance_tracker-worktree/performance_tracker && bash query_schedule.sh $LOGNAME >> ~/logs/scheduleLog
+
+# We process vehicles data every half hour, except between 10am and 11am UTC to allow the new schedule to be processed.
+# Current disabled, but working
+# */30 0-9,11-23 * * * cd ~/performance_tracker-worktree/performance_tracker && bash process_vehicles.sh $LOGNAME >> ~/logs/vehiclesLog

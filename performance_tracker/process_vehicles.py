@@ -89,7 +89,8 @@ for line in range(801, 807):
     df = df[
         [
             "datetime",
-            "datetime_local_iso8601" "vehicle_id",
+            "datetime_local_iso8601",
+            "vehicle_id",
             "trip_id",
             "direction",
             "geometry",
