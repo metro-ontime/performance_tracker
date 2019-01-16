@@ -1,1 +1,2 @@
-*/1 * * * * cd ~/performance_tracker-worktree/performance_tracker && bash query_vehicles.sh $LOGNAME
+*/1 * * * * cd ~/performance_tracker-worktree/performance_tracker && bash query_vehicles.sh $LOGNAME >> ~/logs/vehiclesLog
+*/1 * * * * cd ~/performance_tracker-worktree/performance_tracker && bash query_predictions.sh $LOGNAME >> ~/logs/predictionsLog
