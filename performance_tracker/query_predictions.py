@@ -22,7 +22,8 @@ for line in lines:
     unique_stops = list(stops_direction_A.append(stops_direction_B).stop_id.unique())
 
     for stop_id in unique_stops:
-        url = f"http://api.metro.net/agencies/{agency}/routes/{line}/stops/{stop_id}/predictions/"
+        # url = f"http://api.metro.net/agencies/{agency}/routes/{line}/stops/{stop_id}/predictions/"
+        url = f"http://webservices.nextbus.com/service/publicJSONFeed?command=predictions&a={agency}&routeTag={line}&stopId={stop_id}"
         response = requests.get(url)
         raw_data = response.json()
 
