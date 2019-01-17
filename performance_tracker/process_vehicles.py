@@ -81,7 +81,9 @@ for line in range(801, 807):
     df["relative_position"] = findRelativePositions(df, track_directionA)
     df["datetime"] = pd.to_datetime(df["report_time"], utc=True)
     df["datetime_local_iso8601"] = df.report_time.apply(
-        lambda dt: pendulum.parse(dt, tz="America/Los_Angeles").to_iso8601_string()
+        lambda dt: pendulum.parse(dt, tz="UTC")
+        .in_tz("America/Los_Angeles")
+        .to_iso8601_string()
     )
     df = df.reset_index(drop=True)  # necessary both before and after getTrips
     df = getTrips(df)
