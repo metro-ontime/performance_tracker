@@ -1,7 +1,7 @@
 from helpers.upload import upload
 
 
-date = pendulum.now("UTC").start_of("day")
+date = pendulum.today("America/Los_Angeles")
 date_formatted = date.format("YYYY-MM-DD")
 agency = "lametro-rail"
 

@@ -7,14 +7,9 @@ if [ $# -eq 0 ]
     exit 1
 fi
 
-bash ./query_schedule.sh $1
+bash ./get-process_schedule.sh $1
 
-docker run \
-  -u $(id -u $1):$(id -g $1) \
-  --rm \
-  -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
-  -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-  -v $(pwd):/src metro python upload_schedule.py
+docker run -u $(id -u $1):$(id -g $1) --rm -v $(pwd):/src metro python upload_schedule.py
 if [ $? -eq 0 ]; then
   echo "Successfully uploaded schedule to S3:" $(date) >> $(pwd)/logs/uploadLog
 else
