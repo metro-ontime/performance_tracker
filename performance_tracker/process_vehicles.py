@@ -59,14 +59,14 @@ for line in range(801, 807):
         start_datetime.in_tz("UTC"), end_datetime.in_tz("UTC")
     )
 
-    track_directionA_path = f"data/line_info/{line}/{line}_directionA.geojson"
-    track_directionB_path = f"data/line_info/{line}/{line}_directionB.geojson"
-    with open(track_directionA_path) as infile:
+    track_0_path = f"data/line_info/{line}/{line}_0.geojson"
+    track_1_path = f"data/line_info/{line}/{line}_1.geojson"
+    with open(track_0_path) as infile:
         obj = json.load(infile)
-        track_directionA = LineString(obj["features"][0]["geometry"]["coordinates"])
-    track_directionA
-    with open(track_directionB_path) as infile:
-        track_directionB = json.load(infile)
+        track_0 = LineString(obj["features"][0]["geometry"]["coordinates"])
+    with open(track_1_path) as infile:
+        obj = json.load(infile)
+        track_1 = LineString(obj["features"][0]["geometry"]["coordinates"])
 
     array = [process_frame(datetime, path_base) for datetime in datetimes]
     cleaned = [x for x in array if x is not None]
@@ -79,7 +79,15 @@ for line in range(801, 807):
     df["longitude"] = pd.to_numeric(df.longitude)
     df = toGDF(df)
     # Need to split by direction here and rejoin
-    df["relative_position"] = findRelativePositions(df, track_directionA)
+    
+    mask_0 = (df["direction"] == '0') | (df["direction"] == '90')
+    mask_1 = (df["direction"] == '180') | (df["direction"] == '270')
+    df_0 = df.loc[mask_0]
+    df_1 = df.loc[mask_1]
+    df_0["relative_position"] = findRelativePositions(df_0, track_0)
+    df_1["relative_position"] = findRelativePositions(df_1, track_1)
+    df = pd.concat([df_0, df_1])
+    
     df["datetime"] = pd.to_datetime(df["report_time"], utc=True)
     df["datetime_local_iso8601"] = df.report_time.apply(
         lambda dt: pendulum.parse(dt, tz="UTC")

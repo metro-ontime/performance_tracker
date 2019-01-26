@@ -39,12 +39,12 @@ for line_no in range(801, 807):
 # Blue line (801) has a different set of stations for each direction
 # due to a small loop.
 # We remove them here:
-edit = track_stations["801_directionA"]
-track_stations["801_directionA"] = edit[
+edit = track_stations["801_0"]
+track_stations["801_0"] = edit[
     (edit["stop_id"].isin(["80153", "80154"]) == False)
 ]
-edit = track_stations["801_directionB"]
-track_stations["801_directionB"] = edit[(edit["stop_id"].isin(["80102"]) == False)]
+edit = track_stations["801_1"]
+track_stations["801_1"] = edit[(edit["stop_id"].isin(["80102"]) == False)]
 
 for name in track_stations.keys():
     track_stations[name] = (

@@ -4,6 +4,7 @@ from shapely.geometry import Point
 
 
 def findRelativePositions(positions, line):
+    # this can be done faster using lambda func?
     relative_positions = [
         line.project(position.geometry) / line.length
         for index, position in positions.iterrows()
