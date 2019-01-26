@@ -6,11 +6,9 @@ The GTFS data, vehicle tracking and predictions data all contain "direction" fie
     raw json: 0/180
     schedule: 0 (7th St Metro - north) / 1 (dt Long beach - south)
     prediction json:
-        predictions array: 0
         headsign: 7th St Metro
         dirTag: 801_0_var1
         //
-        predictions array: 1
         headsign: Downtown Long Beach
         dirTag: 801_1_var1
 
@@ -18,11 +16,9 @@ The GTFS data, vehicle tracking and predictions data all contain "direction" fie
     raw json: 90/270
     schedule: 0 (union - east) / 1 (north hollywood - west)
     prediction json:
-        predictions array: 0
         headsign: Union Station
         dirTag: 802_0_var0
         //
-        predictions array: 1
         headsign: North Hollywood
         dirTag: 802_1_var0
 
@@ -30,11 +26,9 @@ The GTFS data, vehicle tracking and predictions data all contain "direction" fie
     raw json: 90/270
     schedule: 0 (norwalk - east) / 1 (redondo - west)
     prediction json:
-        predictions array: 0
         headsign: redondo
         dirTag: 803_1_var0
         //
-        predictions array: 1
         headsign: norwalk
         dirTag: 803_0_var0
 
@@ -42,11 +36,9 @@ The GTFS data, vehicle tracking and predictions data all contain "direction" fie
     raw json: 0/180
     schedule: 0 (azusa - north) / 1 (atlantic - south)
     prediction json:
-        predictions array: 0
         headsign: atlantic
         dirTag: 804_1_var0
         //
-        predictions array: 1
         headsign: azusa
         dirTag: 804_0_var0
     

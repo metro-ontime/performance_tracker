@@ -78,6 +78,7 @@ for line in range(801, 807):
     df["latitude"] = pd.to_numeric(df.latitude)
     df["longitude"] = pd.to_numeric(df.longitude)
     df = toGDF(df)
+    # Need to split by direction here and rejoin
     df["relative_position"] = findRelativePositions(df, track_directionA)
     df["datetime"] = pd.to_datetime(df["report_time"], utc=True)
     df["datetime_local_iso8601"] = df.report_time.apply(
