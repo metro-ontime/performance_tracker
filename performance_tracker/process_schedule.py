@@ -17,13 +17,16 @@ trips = read_csv("data/GTFS/trips.txt")
 # pre-processing (operations on full datasets)
 services_running_today = calendar.services_running_on(start_date).service_id
 trips_running_today = trips[trips["service_id"].isin(services_running_today)]
-trips_and_directions = trips_running_today[['trip_id', 'direction_id']]
+trips_and_directions = trips_running_today[["trip_id", "direction_id"]]
 
 for line_no in range(801, 807):
     line_trips = trips_running_today[trips_running_today["route_id"] == line_no]
     line_schedule = full_schedule[full_schedule["trip_id"].isin(line_trips["trip_id"])]
     line_schedule = scheduleTimeToDateTime(line_schedule, start_date)
     line_schedule = pd.merge(line_schedule, trips_and_directions, on="trip_id")
+    line_schedule = line_schedule[
+        ["datetime", "trip_id", "stop_id", "stop_sequence", "direction_id"]
+    ]
     os.makedirs(f"data/schedule/{line_no}_{agency}", exist_ok=True)
     path = f"data/schedule/{line_no}_{agency}/{start_date}.csv"
     line_schedule.to_csv(path)

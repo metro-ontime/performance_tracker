@@ -1,4 +1,5 @@
 import pandas as pd
+import pendulum
 from datetime import timedelta
 
 
@@ -14,10 +15,15 @@ def scheduleTimeToDateTime(schedule, date):
     tomorrow = schedule[schedule["arrival_hour"] >= 24]
 
     today["datetime"] = today.apply(
-        lambda row: makeDateTime(date, row["arrival_time"]), axis=1
+        lambda row: makeDateTime(date, row["arrival_time"]).to_iso8601_string(), axis=1
     )
     tomorrow["datetime"] = tomorrow.apply(
-        lambda row: makeTomorrowDateTime(date, row["arrival_hour"], row["arrival_min"]),
+        lambda row: makeDateTime(
+            date,
+            f"{'{0:0=2d}'.format(row['arrival_hour'] - 24)}:{'{0:0=2d}'.format(row['arrival_min'])}:00",
+        )
+        .add(days=1)
+        .to_iso8601_string(),
         axis=1,
     )
 
@@ -26,16 +32,5 @@ def scheduleTimeToDateTime(schedule, date):
     return schedule
 
 
-def hourMinusDay(hour):
-    new_hour = int(hour) - 24
-    return "{0:0=2d}".format(new_hour)
-
-
 def makeDateTime(date, time):
-    return pd.to_datetime(date + " " + time)
-
-
-def makeTomorrowDateTime(date, hour, minute):
-    return pd.to_datetime(
-        date + " " + hourMinusDay(hour) + ":" + str(minute) + ":00"
-    ) + timedelta(days=1)
+    return pendulum.parse(f"{date}T{time}", tz="America/Los_Angeles")
