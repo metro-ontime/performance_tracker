@@ -1,5 +1,6 @@
 import pandas as pd
 import pendulum
+import os
 
 # get processed vehicle, estimate arrival times
 
@@ -37,9 +38,8 @@ def estimate_arrivals(trip_id, trip, stations):
 
 
 def match_arrivals_with_schedule(stop_id, arrivals, schedule):
-    estimates = arrivals.set_index(pd.DatetimeIndex(est["datetime"])).sort_index()
+    schedule = schedule.set_index(pd.DatetimeIndex(schedule["datetime"])).sort_index()
     estimates.loc[:, "closest_scheduled"] = estimates.datetime.apply(
-        # TO DO: & where schedule matches stop_id
         lambda x: schedule.index[schedule.index.get_loc(x, method="nearest")]
     )
     estimates["closest_scheduled"] = pd.DatetimeIndex(estimates["closest_scheduled"])
@@ -49,7 +49,7 @@ def match_arrivals_with_schedule(stop_id, arrivals, schedule):
 for line in range(801, 807):
     # load vehicles
     vehicle_positions = pd.read_csv(
-        f"data/vehicle_tracking/processed/{line}_{lametro-rail}/{today}.csv",
+        f"data/vehicle_tracking/processed/{line}_{agency}/{today}.csv",
         index_col=0,
         parse_dates=["datetime"],
     )
@@ -59,28 +59,28 @@ for line in range(801, 807):
     all_est = []
     for direction in range(2):
         vehicles_direction = vehicle_positions[
-            vehicle_positions["direction"] == direction
+            vehicle_positions["direction_id"] == int(direction)
         ]
-        schedule_direction = schedule[schedule["direction"] == direction]
+        schedule_direction = schedule[schedule["direction_id"] == direction]
         stations_direction = pd.read_csv(
             f"data/line_info/{line}/{line}_{direction}_stations.csv", index_col=0
         )
-        trips_direction = vehicles_direction[
-            ["datetime_local_iso8601", "trip_id", "relative_position", "estimate"]
-        ].groupby(["trip_id"])
+        trips_direction = vehicles_direction.groupby(["trip_id"])
 
         estimated_trips = [
             estimate_arrivals(trip_id, trip, stations_direction)
-            for trip_id, trip in trips
+            for trip_id, trip in trips_direction
         ]
+        print(estimated_trips[0])
 
         all_est[direction] = pd.concat(estimated_trips)
-        # remove estimates that are NaT
 
         # for each estimated arrival, find closest scheduled stop & get time diff
         all_est[direction] = pd.concat(
             [
-                match_arrivals_with_schedule(stop_id, stop_estimates, schedule)
+                match_arrivals_with_schedule(
+                    stop_id, stop_estimates, schedule[schedule["stop_id"] == stop_id]
+                )
                 for stop_id, stop_estimates in all_est.groupby(["stop_id"])
             ]
         )
@@ -91,3 +91,8 @@ for line in range(801, 807):
     all_estimates = pd.concat(all_est)
     # write to
     estimated_arrivals_path = f"data/estimates/{line}_{agency}/{today}.csv"
+    os.makedirs(estimated_arrivals_path, exist_ok=True)
+    df.to_csv(
+        os.path.join(estimated_arrivals_path, start_datetime.format("YYYY-MM-DD"))
+        + ".csv"
+    )

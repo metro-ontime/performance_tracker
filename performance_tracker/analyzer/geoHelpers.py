@@ -5,11 +5,7 @@ from shapely.geometry import Point
 
 def findRelativePositions(positions, line):
     # this can be done faster using lambda func?
-    relative_positions = [
-        line.project(position.geometry) / line.length
-        for index, position in positions.iterrows()
-    ]
-    return pd.Series(relative_positions, index=positions.index)
+    return positions.geometry.apply(lambda xy: line.project(xy) / line.length)
 
 
 def toGDF(data):

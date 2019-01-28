@@ -79,15 +79,17 @@ for line in range(801, 807):
     df["longitude"] = pd.to_numeric(df.longitude)
     df = toGDF(df)
     # Need to split by direction here and rejoin
-    
-    mask_0 = (df["direction"] == '0') | (df["direction"] == '90')
-    mask_1 = (df["direction"] == '180') | (df["direction"] == '270')
+
+    mask_0 = (df["direction"] == "0") | (df["direction"] == "90")
+    mask_1 = (df["direction"] == "180") | (df["direction"] == "270")
     df_0 = df.loc[mask_0]
     df_1 = df.loc[mask_1]
     df_0["relative_position"] = findRelativePositions(df_0, track_0)
+    df_0["direction_id"] = 0
     df_1["relative_position"] = findRelativePositions(df_1, track_1)
+    df_1["direction_id"] = 1
     df = pd.concat([df_0, df_1])
-    
+
     df["datetime"] = pd.to_datetime(df["report_time"], utc=True)
     df["datetime_local_iso8601"] = df.report_time.apply(
         lambda dt: pendulum.parse(dt, tz="UTC")
@@ -97,17 +99,8 @@ for line in range(801, 807):
     df = df.reset_index(drop=True)  # necessary both before and after getTrips
     df = getTrips(df)
     df = df.reset_index(drop=True)  # necessary both before and after getTrips
-    df = df[
-        [
-            "datetime",
-            "datetime_local_iso8601",
-            "vehicle_id",
-            "trip_id",
-            "direction",
-            "geometry",
-            "relative_position",
-        ]
-    ]
+    df["datetime"] = df["datetime_local_iso8601"]
+    df = df[["datetime", "trip_id", "direction_id", "relative_position"]]
 
     processed_path = f"data/vehicle_tracking/processed/{line}_{agency}"
     os.makedirs(processed_path, exist_ok=True)
