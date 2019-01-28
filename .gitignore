@@ -1,11 +1,10 @@
 # Project Specific:
 
-performance_tracker/data/vehicle_tracking
-performance_tracker/data/GTFS
-performance_tracker/data/schedule
-performance_tracker/data/predictions
 performance_tracker/logs
 performance_tracker/.aws
+performance_tracker/data/*
+!performance_tracker/data/line_info
+!performance_tracker/data/GIS
 .aws
 # Random jupyter notebooks!!
 Untitled*.ipynb
