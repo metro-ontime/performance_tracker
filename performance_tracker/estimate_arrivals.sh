@@ -9,7 +9,7 @@ fi
 
 # We limit cpu usage to 50% as this process is resource intensive 
 # and we don't mind if it takes a few minutes extra to run
-docker run --cpus="1" -u $(id -u $1):$(id -g $1) --rm -v $(pwd):/src metro python estimate_arrivals.py
+docker run --cpus=".5" -u $(id -u $1):$(id -g $1) --rm -v $(pwd):/src metro python estimate_arrivals.py
 if [ $? -eq 0 ]; then
   echo "Successfully estimated arrivals:" $(date)
 else
