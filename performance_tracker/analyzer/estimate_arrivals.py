@@ -30,3 +30,12 @@ def estimate_arrivals(trip_id, trip, stations, direction):
     # technique and will have datetime = NaT, so we remove them.
     select = select.dropna(subset=["datetime"])
     return select
+
+
+def estimate_arrivals_by_trip(trips, stations, direction):
+    return pd.concat(
+        [
+            estimate_arrivals(trip_id, trip, stations, direction)
+            for trip_id, trip in trips
+        ]
+    )

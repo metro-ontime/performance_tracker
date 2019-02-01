@@ -78,7 +78,6 @@ for line in range(801, 807):
     df["latitude"] = pd.to_numeric(df.latitude)
     df["longitude"] = pd.to_numeric(df.longitude)
     df = toGDF(df)
-    # Need to split by direction here and rejoin
 
     mask_0 = (df["direction"] == "0") | (df["direction"] == "90")
     mask_1 = (df["direction"] == "180") | (df["direction"] == "270")
