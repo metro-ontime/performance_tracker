@@ -7,6 +7,7 @@
 # Metro updates the GTFS data at 1am LA time every day, so we should hopefully always get the latest data successfully...
 0 10 * * * cd ~/performance_tracker-worktree/performance_tracker && bash get-process-upload_schedule.sh $LOGNAME >> ~/logs/scheduleLog
 
-# We process vehicles data every half hour, except between 10am and 11am UTC to allow the new schedule to be processed.
+# We process vehicles data every half hour, except between 7am and 11am UTC to allow the new schedule to be processed,
+# and also to avoid timing bugs - daylight savings, code running between midnight and 3am is still buggy.
 # Current disabled, but working
-# */30 0-9,11-23 * * * cd ~/performance_tracker-worktree/performance_tracker && bash process_vehicles.sh $LOGNAME >> ~/logs/vehiclesLog
+*/30 0-6,11-23 * * * cd ~/performance_tracker-worktree/performance_tracker && bash process_upload_latest.sh $LOGNAME >> ~/logs/vehiclesLog
