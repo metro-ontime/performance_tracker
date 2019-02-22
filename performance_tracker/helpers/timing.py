@@ -35,26 +35,3 @@ def last_scheduled_arrival(schedule_path):
     return pendulum.parse(
         schedule_on_this_date.datetime.max(), tz="America/Los_Angeles"
     )
-
-
-def bullshit():
-    first_scheduled_arrival = pendulum.parse()
-    if now < first_scheduled_arrival:
-        # i.e. if now is earlier than the first scheduled train on this date,
-        # we must be still on yesterday's timetable
-        schedule_yesterday = pd.read_csv(
-            f"data/schedule/{line}_{agency}/{yesterday}.csv"
-        )
-        start_datetime = pendulum.parse(
-            schedule_yesterday.datetime.min(), tz="America/Los_Angeles"
-        )
-    else:
-        start_datetime = first_scheduled_arrival
-
-    path_base = f"data/vehicle_tracking/raw/{line}_{agency}"
-
-    dtfs = DateTimeFS(path_base)
-
-    datetimes = dtfs.get_datetimes_in_range(
-        start_datetime.in_tz("UTC"), end_datetime.in_tz("UTC")
-    )
