@@ -8,12 +8,14 @@ from analyzer.nextBusData import NextBusData
 from analyzer.geoHelpers import findRelativePositions, toGDF
 from analyzer.tracker import getTrips
 from helpers.datetimefs import DateTimeFS, construct_filename
+from helpers.timing import (
+    get_appropriate_schedule,
+    first_scheduled_arrival,
+    last_scheduled_arrival,
+)
 
 agency = "lametro-rail"
-now = pendulum.now("America/Los_Angeles")
-today = now.format("YYYY-MM-DD")
-yesterday = pendulum.yesterday("America/Los_Angeles").format("YYYY-MM-DD")
-end_datetime = now
+datetime = pendulum.now("America/Los_Angeles")
 
 
 def process_frame(datetime, path_base):
@@ -30,26 +32,9 @@ def process_frame(datetime, path_base):
 
 
 for line in range(801, 807):
-    schedule_path = f"data/schedule/{line}_{agency}/{today}.csv"
-    if not os.path.exists(schedule_path):
-        schedule_path = f"data/schedule/{line}_{agency}/{yesterday}.csv"
-
-    schedule_on_this_date = pd.read_csv(schedule_path)
-
-    first_scheduled_arrival = pendulum.parse(
-        schedule_on_this_date.datetime.min(), tz="America/Los_Angeles"
-    )
-    if now < first_scheduled_arrival:
-        # i.e. if now is earlier than the first scheduled train on this date,
-        # we must be still on yesterday's timetable
-        schedule_yesterday = pd.read_csv(
-            f"data/schedule/{line}_{agency}/{yesterday}.csv"
-        )
-        start_datetime = pendulum.parse(
-            schedule_yesterday.datetime.min(), tz="America/Los_Angeles"
-        )
-    else:
-        start_datetime = first_scheduled_arrival
+    schedule_path = get_appropriate_schedule(line, agency, datetime, "data/schedule")
+    start_datetime = first_scheduled_arrival(schedule_path)
+    end_datetime = last_scheduled_arrival(schedule_path)
 
     path_base = f"data/vehicle_tracking/raw/{line}_{agency}"
 

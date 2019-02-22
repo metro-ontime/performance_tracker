@@ -6,6 +6,7 @@ performance_tracker/data/*
 !performance_tracker/data/line_info
 !performance_tracker/data/GIS
 .aws
+sample_data
 # Random jupyter notebooks!!
 Untitled*.ipynb
 

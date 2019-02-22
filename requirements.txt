@@ -8,3 +8,4 @@ geopy==1.17.0
 requests
 pendulum
 boto3
+pytest
