@@ -1,13 +1,13 @@
 import pendulum
+import pytest
 import sys
 
 sys.path.append("../performance_tracker")
 
 from helpers.timing import (
-    get_latest_schedule,
     get_appropriate_schedule,
-    first_scheduled_arrival,
-    last_scheduled_arrival,
+    get_date_if_exists_otherwise_previous,
+    check_datetime,
 )
 
 
@@ -17,27 +17,52 @@ agency = "lametro-rail"
 
 def test_arbitrary_schedule():
     sample_date = pendulum.datetime(2019, 1, 31, 12, tz="America/Los_Angeles")
-    latest_schedule_path = "../sample_data/schedule/804_lametro-rail/2019-01-31.csv"
+    schedule_path = "../sample_data/schedule/804_lametro-rail/2019-01-31.csv"
 
     assert (
-        get_appropriate_schedule(line, agency, sample_date, "../sample_data/schedule")
-        == latest_schedule_path
+        get_appropriate_schedule(
+            sample_date, f"../sample_data/schedule/{line}_{agency}"
+        )["path"]
+        == schedule_path
     )
 
-    assert first_scheduled_arrival(latest_schedule_path) == pendulum.parse(
-        "2019-01-31T03:45:00-08:00"
-    )
-
-    assert last_scheduled_arrival(latest_schedule_path) == pendulum.parse(
-        "2019-02-01T02:06:00-08:00"
+    assert (
+        get_date_if_exists_otherwise_previous(
+            sample_date, f"../sample_data/schedule/{line}_{agency}"
+        )
+        == sample_date
     )
 
 
 def test_after_midnight():
     sample_date = pendulum.datetime(2019, 1, 29, 1, tz="America/Los_Angeles")
-    latest_schedule_path = "../sample_data/schedule/804_lametro-rail/2019-01-28.csv"
+    schedule_path = "../sample_data/schedule/804_lametro-rail/2019-01-28.csv"
 
     assert (
-        get_appropriate_schedule(line, agency, sample_date, "../sample_data/schedule")
-        == latest_schedule_path
+        get_appropriate_schedule(
+            sample_date, f"../sample_data/schedule/{line}_{agency}"
+        )["path"]
+        == schedule_path
     )
+
+
+def test_before_schedule_download():
+    sample_date = pendulum.datetime(2019, 2, 1, 1, tz="America/Los_Angeles")
+    assert get_date_if_exists_otherwise_previous(
+        sample_date, f"../sample_data/schedule/{line}_{agency}"
+    ) == sample_date.subtract(days=1)
+
+
+def test_checks():
+    sample_date = pendulum.datetime(2019, 2, 1, 1, tz="America/Los_Angeles")
+    dates = ["2019-01-31"]
+    assert check_datetime(sample_date, dates, "YYYY-MM-DD") == False
+    sample_date = pendulum.datetime(2019, 2, 1, 1, tz="America/Los_Angeles")
+    dates = ["2019-01-31", "2019-02-01"]
+    assert check_datetime(sample_date, dates, "YYYY-MM-DD") == True
+
+
+def test_empty_dates():
+    sample_date = pendulum.datetime(2019, 2, 1, 1, tz="America/Los_Angeles")
+    with pytest.raises(Exception):
+        check_datetime(sample_date, [], "YYYY-MM-DD")
