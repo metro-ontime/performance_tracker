@@ -7,31 +7,24 @@ from analyzer.analyze_estimates import (
     match_arrivals_with_schedule,
     match_previous_stop_times,
 )
+from helpers.timing import get_appropriate_schedule, get_appropriate_vehicle_positions
 from analyzer.summary import statistic_summary
 
 agency = "lametro-rail"
-now = pendulum.now("America/Los_Angeles")
-today = now.format("YYYY-MM-DD")
-yesterday = pendulum.yesterday("America/Los_Angeles").format("YYYY-MM-DD")
+datetime = pendulum.now("America/Los_Angeles")
 
 
 for line in range(801, 807):
-    vehicle_positions_path = (
-        f"data/vehicle_tracking/processed/{line}_{agency}/{today}.csv"
+    schedule = get_appropriate_schedule(datetime, f"data/schedule/{line}_{agency}")
+    vehicle_positions = get_appropriate_vehicle_positions(
+        datetime, f"data/vehicle_tracking/processed/{line}_{agency}"
     )
-    if not os.path.exists(vehicle_positions_path):
-        vehicle_positions_path = (
-            f"data/vehicle_tracking/processed/{line}_{agency}/{yesterday}.csv"
-        )
-
-    schedule_path = f"data/schedule/{line}_{agency}/{today}.csv"
-    if not os.path.exists(schedule_path):
-        schedule_path = f"data/schedule/{line}_{agency}/{yesterday}.csv"
-
+    if not schedule["date"] == vehicle_positions["date"]:
+        continue
     vehicle_positions = pd.read_csv(
-        vehicle_positions_path, index_col=0, parse_dates=["datetime"]
+        vehicle_positions["path"], index_col=0, parse_dates=["datetime"]
     )
-    schedule = pd.read_csv(schedule_path, index_col=0)
+    schedule = schedule["data"]
 
     all_estimates = list()
     for direction in range(2):
@@ -64,10 +57,11 @@ for line in range(801, 807):
         ]
     ]
 
-    summary = statistic_summary(all_estimates, schedule, now.to_iso8601_string())
+    summary = statistic_summary(all_estimates, schedule, datetime.to_iso8601_string())
     # write summary
     summary_dir = f"data/summaries/{line}_{agency}"
     os.makedirs(summary_dir, exist_ok=True)
-    summary_path = os.path.join(summary_dir, today) + ".json"
+    formatted_time = datetime.format("YYYY-MM-DD")
+    summary_path = os.path.join(summary_dir, formatted_time) + ".json"
     with open(summary_path, "w") as outfile:
         json.dump(summary, outfile)

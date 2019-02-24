@@ -12,10 +12,9 @@ def check_datetime(datetime, dates, formatting):
     return False
 
 
-def get_schedule_path(datetime, base_path):
+def format_date_path(datetime, base_path):
     yyyy_mm_dd = datetime.format("YYYY-MM-DD")
-    schedule_path = os.path.join(base_path, f"{yyyy_mm_dd}.csv")
-    return schedule_path
+    return os.path.join(base_path, f"{yyyy_mm_dd}.csv")
 
 
 def get_date_if_exists_otherwise_previous(datetime, base_path):
@@ -35,25 +34,44 @@ def get_date_if_exists_otherwise_previous(datetime, base_path):
 def get_appropriate_schedule(datetime, base_path):
     datetime = datetime.in_tz("America/Los_Angeles")
     schedule_datetime = get_date_if_exists_otherwise_previous(datetime, base_path)
-
-    schedule_path = get_schedule_path(schedule_datetime, base_path)
-    schedule_on_this_date = pd.read_csv(schedule_path)
-    schedule_start = first_scheduled_arrival(schedule_on_this_date)
-    schedule_end = last_scheduled_arrival(schedule_on_this_date)
-
-    if datetime < schedule_start:
+    path = format_date_path(schedule_datetime, base_path)
+    schedule = pd.read_csv(path, index_col=0)
+    start = first_entry(schedule)
+    end = last_entry(schedule)
+    if datetime < start:
         schedule_datetime = schedule_datetime.subtract(days=1)
-        schedule_path = get_schedule_path(schedule_datetime, base_path)
-        schedule_on_this_date = pd.read_csv(schedule_path)
-        schedule_start = first_scheduled_arrival(schedule_on_this_date)
-        schedule_end = last_scheduled_arrival(schedule_on_this_date)
+        path = format_date_path(schedule_datetime, base_path)
+        schedule = pd.read_csv(path, index_col=0)
+        start = first_entry(schedule)
+        end = last_entry(schedule)
+    return {
+        "path": path,
+        "start": start,
+        "end": end,
+        "data": schedule,
+        "date": schedule_datetime.format("YYYY-MM-DD"),
+    }
 
-    return {"path": schedule_path, "start": schedule_start, "end": schedule_end}
+
+def get_appropriate_vehicle_positions(datetime, base_path):
+    datetime = datetime.in_tz("America/Los_Angeles")
+    vehicles_datetime = get_date_if_exists_otherwise_previous(datetime, base_path)
+    path = format_date_path(vehicles_datetime, base_path)
+    vehicles_df = pd.read_csv(path, index_col=0)
+    start = first_entry(vehicles_df)
+    end = last_entry(vehicles_df)
+    return {
+        "path": path,
+        "start": start,
+        "end": end,
+        "data": vehicles_df,
+        "date": vehicles_datetime.format("YYYY-MM-DD"),
+    }
 
 
-def first_scheduled_arrival(schedule):
+def first_entry(schedule):
     return pendulum.parse(schedule.datetime.min(), tz="America/Los_Angeles")
 
 
-def last_scheduled_arrival(schedule):
+def last_entry(schedule):
     return pendulum.parse(schedule.datetime.max(), tz="America/Los_Angeles")
