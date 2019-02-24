@@ -31,41 +31,26 @@ def get_date_if_exists_otherwise_previous(datetime, base_path):
         return None
 
 
-def get_appropriate_schedule(datetime, base_path):
+def get_appropriate_timetable(datetime, base_path):
     datetime = datetime.in_tz("America/Los_Angeles")
-    schedule_datetime = get_date_if_exists_otherwise_previous(datetime, base_path)
-    path = format_date_path(schedule_datetime, base_path)
-    schedule = pd.read_csv(path, index_col=0)
-    start = first_entry(schedule)
-    end = last_entry(schedule)
+    file_datetime = get_date_if_exists_otherwise_previous(datetime, base_path)
+    path = format_date_path(file_datetime, base_path)
+    df = pd.read_csv(path, index_col=0)
+    start = first_entry(df)
+    end = last_entry(df)
     if datetime < start:
-        schedule_datetime = schedule_datetime.subtract(days=1)
-        path = format_date_path(schedule_datetime, base_path)
-        schedule = pd.read_csv(path, index_col=0)
-        start = first_entry(schedule)
-        end = last_entry(schedule)
+        file_datetime = file_datetime.subtract(days=1)
+        path = format_date_path(file_datetime, base_path)
+        df = pd.read_csv(path, index_col=0)
+        start = first_entry(df)
+        end = last_entry(df)
+
     return {
         "path": path,
         "start": start,
         "end": end,
-        "data": schedule,
-        "date": schedule_datetime.format("YYYY-MM-DD"),
-    }
-
-
-def get_appropriate_vehicle_positions(datetime, base_path):
-    datetime = datetime.in_tz("America/Los_Angeles")
-    vehicles_datetime = get_date_if_exists_otherwise_previous(datetime, base_path)
-    path = format_date_path(vehicles_datetime, base_path)
-    vehicles_df = pd.read_csv(path, index_col=0)
-    start = first_entry(vehicles_df)
-    end = last_entry(vehicles_df)
-    return {
-        "path": path,
-        "start": start,
-        "end": end,
-        "data": vehicles_df,
-        "date": vehicles_datetime.format("YYYY-MM-DD"),
+        "data": df,
+        "date": file_datetime.format("YYYY-MM-DD"),
     }
 
 

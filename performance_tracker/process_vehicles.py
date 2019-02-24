@@ -8,18 +8,14 @@ from analyzer.process_vehicles import (
     get_track,
     process_raw_vehicles,
 )
-from helpers.timing import (
-    get_appropriate_schedule,
-    first_scheduled_arrival,
-    last_scheduled_arrival,
-)
+from helpers.timing import get_appropriate_timetable
 
 agency = "lametro-rail"
 datetime = pendulum.now("America/Los_Angeles")
 
 
 for line in range(801, 807):
-    schedule = get_appropriate_schedule(datetime, f"data/schedule/{line}_{agency}")
+    schedule = get_appropriate_timetable(datetime, f"data/schedule/{line}_{agency}")
     raw_vehicle_files = determine_vehicle_paths(
         f"data/vehicle_tracking/raw/{line}_{agency}", schedule["start"], schedule["end"]
     )

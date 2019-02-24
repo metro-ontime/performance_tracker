@@ -5,7 +5,7 @@ import sys
 sys.path.append("../performance_tracker")
 
 from helpers.timing import (
-    get_appropriate_schedule,
+    get_appropriate_timetable,
     get_date_if_exists_otherwise_previous,
     check_datetime,
 )
@@ -20,7 +20,7 @@ def test_arbitrary_schedule():
     schedule_path = "../sample_data/schedule/804_lametro-rail/2019-01-31.csv"
 
     assert (
-        get_appropriate_schedule(
+        get_appropriate_timetable(
             sample_date, f"../sample_data/schedule/{line}_{agency}"
         )["path"]
         == schedule_path
@@ -39,7 +39,7 @@ def test_after_midnight():
     schedule_path = "../sample_data/schedule/804_lametro-rail/2019-01-28.csv"
 
     assert (
-        get_appropriate_schedule(
+        get_appropriate_timetable(
             sample_date, f"../sample_data/schedule/{line}_{agency}"
         )["path"]
         == schedule_path

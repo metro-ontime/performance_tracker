@@ -7,7 +7,7 @@ from analyzer.analyze_estimates import (
     match_arrivals_with_schedule,
     match_previous_stop_times,
 )
-from helpers.timing import get_appropriate_schedule, get_appropriate_vehicle_positions
+from helpers.timing import get_appropriate_timetable
 from analyzer.summary import statistic_summary
 
 agency = "lametro-rail"
@@ -15,22 +15,20 @@ datetime = pendulum.now("America/Los_Angeles")
 
 
 for line in range(801, 807):
-    schedule = get_appropriate_schedule(datetime, f"data/schedule/{line}_{agency}")
-    vehicle_positions = get_appropriate_vehicle_positions(
-        datetime, f"data/vehicle_tracking/processed/{line}_{agency}"
-    )
-    if not schedule["date"] == vehicle_positions["date"]:
+    schedule_base_path = f"data/schedule/{line}_{agency}"
+    schedule = get_appropriate_timetable(datetime, schedule_base_path)
+    vehicles_base_path = f"data/vehicle_tracking/processed/{line}_{agency}"
+    vehicles = get_appropriate_timetable(datetime, vehicles_base_path)
+
+    if not schedule["date"] == vehicles["date"]:
         continue
-    vehicle_positions = pd.read_csv(
-        vehicle_positions["path"], index_col=0, parse_dates=["datetime"]
-    )
-    schedule = schedule["data"]
+
+    vehicles = pd.read_csv(vehicles["path"], index_col=0, parse_dates=["datetime"])
+    schedule = pd.read_csv(schedule["path"], index_col=0, parse_dates=["datetime"])
 
     all_estimates = list()
     for direction in range(2):
-        vehicles_direction = vehicle_positions[
-            vehicle_positions["direction_id"] == direction
-        ]
+        vehicles_direction = vehicles[vehicles["direction_id"] == direction]
         schedule_direction = schedule[schedule["direction_id"] == direction]
         stations = pd.read_csv(
             f"data/line_info/{line}/{line}_{direction}_stations.csv", index_col=0
