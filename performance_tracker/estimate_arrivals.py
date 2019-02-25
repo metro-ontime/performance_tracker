@@ -16,15 +16,15 @@ datetime = pendulum.now("America/Los_Angeles")
 
 for line in range(801, 807):
     schedule_base_path = f"data/schedule/{line}_{agency}"
-    schedule = get_appropriate_timetable(datetime, schedule_base_path)
+    schedule_meta = get_appropriate_timetable(datetime, schedule_base_path)
     vehicles_base_path = f"data/vehicle_tracking/processed/{line}_{agency}"
-    vehicles = get_appropriate_timetable(datetime, vehicles_base_path)
+    vehicles_meta = get_appropriate_timetable(datetime, vehicles_base_path)
 
-    if not schedule["date"] == vehicles["date"]:
+    if not schedule_meta["date"] == vehicles_meta["date"]:
         continue
 
-    vehicles = pd.read_csv(vehicles["path"], index_col=0, parse_dates=["datetime"])
-    schedule = pd.read_csv(schedule["path"], index_col=0, parse_dates=["datetime"])
+    vehicles = pd.read_csv(vehicles_meta["path"], index_col=0, parse_dates=["datetime"])
+    schedule = pd.read_csv(schedule_meta["path"], index_col=0, parse_dates=["datetime"])
 
     all_estimates = list()
     for direction in range(2):
@@ -59,7 +59,7 @@ for line in range(801, 807):
     # write summary
     summary_dir = f"data/summaries/{line}_{agency}"
     os.makedirs(summary_dir, exist_ok=True)
-    formatted_time = datetime.format("YYYY-MM-DD")
+    formatted_time = schedule_meta["date"]
     summary_path = os.path.join(summary_dir, formatted_time) + ".json"
     with open(summary_path, "w") as outfile:
         json.dump(summary, outfile)
