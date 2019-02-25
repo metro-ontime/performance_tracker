@@ -1,5 +1,6 @@
 from helpers.upload import upload
 import pendulum
+from helpers.timing import get_appropriate_timetable
 
 
 now = pendulum.now("America/Los_Angeles")
