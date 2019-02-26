@@ -14,6 +14,8 @@ agency = "lametro-rail"
 datetime = pendulum.now("America/Los_Angeles")
 
 
+master_summary = {}
+
 for line in range(801, 807):
     schedule_base_path = f"data/schedule/{line}_{agency}"
     schedule_meta = get_appropriate_timetable(datetime, schedule_base_path)
@@ -55,11 +57,14 @@ for line in range(801, 807):
         ]
     ]
 
-    summary = statistic_summary(all_estimates, schedule, datetime.to_iso8601_string())
-    # write summary
-    summary_dir = f"data/summaries/{line}_{agency}"
-    os.makedirs(summary_dir, exist_ok=True)
-    formatted_time = schedule_meta["date"]
-    summary_path = os.path.join(summary_dir, formatted_time) + ".json"
-    with open(summary_path, "w") as outfile:
-        json.dump(summary, outfile)
+    master_summary[f"{line}_{agency}"] = statistic_summary(
+        all_estimates, schedule, schedule_meta["date"], datetime.to_iso8601_string()
+    )
+
+# write master summary
+summary_dir = f"data/summaries"
+os.makedirs(summary_dir, exist_ok=True)
+formatted_time = schedule_meta["date"]  # Takes the date of the last processed schedule
+summary_path = os.path.join(summary_dir, formatted_time) + ".json"
+with open(summary_path, "w") as outfile:
+    json.dump(summary, outfile)

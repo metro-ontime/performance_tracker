@@ -1,11 +1,12 @@
 import pandas as pd
 
 
-def statistic_summary(estimates, schedule, timestamp):
+def statistic_summary(estimates, schedule, date, timestamp):
     since_scheduled = estimates.since_scheduled
     since_prev_stop = estimates.since_prev_stop
 
     summary = {}
+    summary["date"] = date
     summary["timestamp"] = timestamp
     summary["total_arrivals_analyzed"] = len(estimates)
     summary["total_scheduled_arrivals"] = len(schedule)
