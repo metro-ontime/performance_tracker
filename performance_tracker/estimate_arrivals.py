@@ -67,4 +67,5 @@ os.makedirs(summary_dir, exist_ok=True)
 formatted_time = schedule_meta["date"]  # Takes the date of the last processed schedule
 summary_path = os.path.join(summary_dir, formatted_time) + ".json"
 with open(summary_path, "w") as outfile:
-    json.dump(summary, outfile)
+    upload(summary_path, summary_path)
+    json.dump(master_summary, outfile)
