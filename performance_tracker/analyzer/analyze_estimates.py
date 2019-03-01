@@ -15,7 +15,9 @@ def match_times(stop_id, estimates, schedule):
     estimates.loc[:, "closest_scheduled"] = estimates.datetime.apply(
         lambda x: schedule.index[schedule.index.get_loc(x, method="nearest")]
     )
-    estimates["closest_scheduled"] = pd.DatetimeIndex(estimates["closest_scheduled"])
+    estimates.loc[:, "closest_scheduled"] = pd.DatetimeIndex(
+        estimates["closest_scheduled"]
+    )
     return estimates
 
 
@@ -40,7 +42,7 @@ def get_previous_stop_times(stop_id, stop_estimates):
     stop_estimates = stop_estimates.set_index(
         pd.DatetimeIndex(stop_estimates["datetime"])
     ).sort_index()
-    stop_estimates["prev_stop_time"] = stop_estimates["datetime"].shift()
+    stop_estimates.loc[:, "prev_stop_time"] = stop_estimates["datetime"].shift()
     return stop_estimates
 
 

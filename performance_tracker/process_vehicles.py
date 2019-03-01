@@ -16,6 +16,7 @@ datetime = pendulum.now("America/Los_Angeles")
 
 for line in range(801, 807):
     schedule = get_appropriate_timetable(datetime, f"data/schedule/{line}_{agency}")
+    print(schedule["path"])
     raw_vehicle_files = determine_vehicle_paths(
         f"data/vehicle_tracking/raw/{line}_{agency}", schedule["start"], schedule["end"]
     )
@@ -27,5 +28,6 @@ for line in range(801, 807):
     date_format = schedule["start"].format("YYYY-MM-DD")
     processed_path_base = f"data/vehicle_tracking/processed/{line}_{agency}"
     processed_path = os.path.join(processed_path_base, date_format) + ".csv"
+    print(processed_path)
     os.makedirs(processed_path_base, exist_ok=True)
     processed.to_csv(processed_path)

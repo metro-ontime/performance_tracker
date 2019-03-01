@@ -19,8 +19,10 @@ master_summary = {}
 for line in range(801, 807):
     schedule_base_path = f"data/schedule/{line}_{agency}"
     schedule_meta = get_appropriate_timetable(datetime, schedule_base_path)
+    print(schedule_meta["path"])
     vehicles_base_path = f"data/vehicle_tracking/processed/{line}_{agency}"
     vehicles_meta = get_appropriate_timetable(datetime, vehicles_base_path)
+    print(vehicles_meta["path"])
 
     if not schedule_meta["date"] == vehicles_meta["date"]:
         continue
@@ -37,11 +39,19 @@ for line in range(801, 807):
         )
         trips = vehicles_direction.groupby(["trip_id"])
 
+        print(
+            f"Beginning heavy calculations for line {line} and direction {direction} at",
+            pendulum.now("UTC"),
+        )
         ### Heavy calculations
         estimates = estimate_arrivals_by_trip(trips, stations, direction)
+        print("Estimate arrivals by trip: completed at ", pendulum.now("UTC"))
         estimates = match_arrivals_with_schedule(estimates, schedule_direction)
+        print("Match arrivals with schedule: completed at ", pendulum.now("UTC"))
         estimates = match_previous_stop_times(estimates)
+        print("Match previous stop times: completed at ", pendulum.now("UTC"))
         ###
+        print("Completed heavy calculations at", pendulum.now("UTC"))
 
         # append this set of estimates to list
         all_estimates.append(estimates)
