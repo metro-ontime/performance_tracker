@@ -5,9 +5,10 @@ import numpy as np
 def replace_all_nans(obj):
     for key, value in obj.items():
         if type(value) is dict:
-            replace_all_nans(value)
+            obj[key] = replace_all_nans(value)
         elif np.isnan(value):
             obj[key] = None
+    return obj
 
 
 def statistic_summary(estimates, schedule, date, timestamp):
@@ -15,8 +16,6 @@ def statistic_summary(estimates, schedule, date, timestamp):
     since_prev_stop = estimates.since_prev_stop
 
     summary = {}
-    summary["date"] = date
-    summary["timestamp"] = timestamp
     summary["total_arrivals_analyzed"] = len(estimates)
     summary["total_scheduled_arrivals"] = len(schedule)
     summary["coverage"] = len(estimates) / len(schedule)
@@ -71,5 +70,9 @@ def statistic_summary(estimates, schedule, date, timestamp):
         ]
     )
 
-    replace_all_nans(summary)
+    summary = replace_all_nans(summary)
+
+    summary["date"] = date
+    summary["timestamp"] = timestamp
+
     return summary
