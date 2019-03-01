@@ -1,4 +1,13 @@
 import pandas as pd
+import numpy as np
+
+
+def replace_all_nans(obj):
+    for key, value in obj.items():
+        if type(value) is dict:
+            replace_all_nans(value)
+        elif np.isnan(value):
+            obj[key] = None
 
 
 def statistic_summary(estimates, schedule, date, timestamp):
@@ -62,4 +71,5 @@ def statistic_summary(estimates, schedule, date, timestamp):
         ]
     )
 
+    replace_all_nans(summary)
     return summary
