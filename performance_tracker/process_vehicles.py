@@ -18,6 +18,8 @@ print(f"The current time is {datetime.to_iso8601_string()}")
 for line in range(801, 807):
     schedule = get_appropriate_timetable(datetime, f"data/schedule/{line}_{agency}")
     print(schedule["path"])
+    print("start: ", schedule["start"])
+    print("end: ", schedule["end"])
     raw_vehicle_files = determine_vehicle_paths(
         f"data/vehicle_tracking/raw/{line}_{agency}", schedule["start"], schedule["end"]
     )
