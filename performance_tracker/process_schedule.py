@@ -24,6 +24,9 @@ for line_no in range(801, 807):
     line_schedule = full_schedule[full_schedule["trip_id"].isin(line_trips["trip_id"])]
     line_schedule = scheduleTimeToDateTime(line_schedule, start_date)
     line_schedule = pd.merge(line_schedule, trips_and_directions, on="trip_id")
+    line_schedule = line_schedule.drop_duplicates(
+        subset=["datetime", "stop_id", "stop_sequence", "direction_id"]
+    )
     line_schedule = line_schedule[
         ["datetime", "trip_id", "stop_id", "stop_sequence", "direction_id"]
     ]
