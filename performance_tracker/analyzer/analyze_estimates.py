@@ -12,26 +12,32 @@ def match_times(stop_id, estimates, schedule):
     # we will get some that are far apart because the actual train was likely associated
     # with a different scheduled stop time.
     # This way seems to be fairer on Metro, but we are open to improvements!
-    estimates.loc[:, "closest_scheduled"] = estimates.datetime.apply(
-        lambda x: schedule.index[schedule.index.get_loc(x, method="nearest")]
-    )
-    estimates.loc[:, "closest_scheduled"] = pd.DatetimeIndex(
-        estimates["closest_scheduled"]
-    )
-    return estimates
+
+    # Try clause is here because there was an unexplained bug occurring on April 10 2019 with data inputs from around 1:35pm. There was an index (-1) out of range error.
+    # Exact cause of the issue is still uncertain but there was a vehicle position observation out of range on the blue line at that time.
+    try:
+        estimates.loc[:, "closest_scheduled"] = estimates.datetime.apply(
+            lambda x: schedule.index[schedule.index.get_loc(x, method="nearest")]
+        )
+        estimates.loc[:, "closest_scheduled"] = pd.DatetimeIndex(
+            estimates["closest_scheduled"]
+        )
+        return estimates
+    except:
+        return None
 
 
 def match_arrivals_with_schedule(estimated_trips, schedule_direction):
-    matched_estimates = pd.concat(
-        [
-            match_times(
-                stop_id,
-                stop_estimates,
-                schedule_direction[schedule_direction["stop_id"] == stop_id],
-            )
-            for stop_id, stop_estimates in estimated_trips.groupby(["stop_id"])
-        ]
-    )
+    matched_estimates = [
+        match_times(
+            stop_id,
+            stop_estimates,
+            schedule_direction[schedule_direction["stop_id"] == stop_id],
+        )
+        for stop_id, stop_estimates in estimated_trips.groupby(["stop_id"])
+    ]
+    matched_estimates = [x for x in matched_estimates if x is not None]
+    matched_estimates = pd.concat(matched_estimates)
     matched_estimates["since_scheduled"] = (
         matched_estimates["datetime"] - matched_estimates["closest_scheduled"]
     )
