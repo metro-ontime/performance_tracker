@@ -4,6 +4,11 @@ from datetime import timedelta
 
 
 def scheduleTimeToDateTime(schedule, date):
+    """
+    schedule: pandas dataframe input with "arrival_hour", "arrival_min" fields.
+    date: Date formatted YYYY-MM-DD. This is the date we will assign the arrival times to when constructing timestamps.
+    Metro schedule times are given in an unconventional 27hr clock format. All times are relative to 00:00 (midnight) of the timetable day they are assigned to. Some times (i.e. >23:59) are assigned to the previous calendar day because they are the very late services running past midnight. We have to convert all these given times to conventional ISO8601 timestamps before we can use them.
+    """
     schedule["arrival_hour"] = schedule.arrival_time.apply(
         lambda row: int(str(row)[0:2])
     )

@@ -60,6 +60,7 @@ def process_raw_vehicles(df, track):
     df_0 = df.loc[mask_0]
     df_1 = df.loc[mask_1]
 
+    # TODO: We can cache the results of findRelativePositions since there is a finite set of sensor locations.
     df_0["relative_position"] = findRelativePositions(df_0, track[0])
     df_0["direction_id"] = 0
     df_1["relative_position"] = findRelativePositions(df_1, track[1])

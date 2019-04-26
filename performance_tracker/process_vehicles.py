@@ -1,3 +1,6 @@
+"""
+This script finds the raw vehicle tracking data (the JSON responses from Nextbus API) collected for a particular day and assembles it into table rows grouped by trip_id. Since trip_ids are NOT given in the raw data (but vehicle_ids are), we have to follow each vehicle and increment a trip_id counter every time it changes direction. The function process_raw_vehicles does the meat of the work here.
+"""
 import os
 import json
 import pendulum

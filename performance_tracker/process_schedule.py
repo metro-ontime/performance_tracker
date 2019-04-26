@@ -1,3 +1,11 @@
+"""
+The raw GTFS data includes multiple days worth of schedule information, and the entire schedule including all lines is contained in the stop_times.txt file, which we read into "full_schedule". This script identifies the trips running on a particular day and places them in the appropriate schedule table (one for each line).
+The GTFS reference documentation will be useful here https://developers.google.com/transit/gtfs/reference/
+The output of this script is a CSV for each line that includes the following fields:
+    "datetime", "trip_id", "stop_id", "stop_sequence", "direction_id"
+
+The datetimes in both stop_times.txt and the output CSVs are in local LA time - so that we can group all scheduled services on one day together.
+"""
 import os
 import pendulum
 import pandas as pd
@@ -22,6 +30,7 @@ trips_and_directions = trips_running_today[["trip_id", "direction_id"]]
 for line_no in range(801, 807):
     line_trips = trips_running_today[trips_running_today["route_id"] == line_no]
     line_schedule = full_schedule[full_schedule["trip_id"].isin(line_trips["trip_id"])]
+    # Convert ~27hr Metro schedule times to ISO8601 timestamps
     line_schedule = scheduleTimeToDateTime(line_schedule, start_date)
     line_schedule = pd.merge(line_schedule, trips_and_directions, on="trip_id")
     line_schedule = line_schedule.drop_duplicates(
