@@ -1,11 +1,12 @@
 import os
 import io
 import requests
-import zipfile
+from zipfile import ZipFile
 
-os.makedirs("data/GTFS", exist_ok=True)
-url = "https://gitlab.com/LACMTA/gtfs_rail/raw/master/gtfs_rail.zip"
-
-response = requests.get(url)
-z = zipfile.ZipFile(io.BytesIO(response.content))
-z.extractall("data/GTFS")
+def get_schedule(ctx):
+    url = "https://gitlab.com/LACMTA/gtfs_rail/raw/master/gtfs_rail.zip"
+    response = requests.get(url)
+    zf = ZipFile(io.BytesIO(response.content))
+    path = os.path.join(ctx.config["local_data"], "GTFS")
+    os.makedirs(path, exist_ok=True)
+    zf.extractall(path)

@@ -36,8 +36,10 @@ def load_track_by_direction(direction, line, path_base):
     track_path = f"{path_base}/{line}_{direction}.geojson"
     with open(track_path) as infile:
         obj = json.load(infile)
-    return LineString(obj["features"][0]["geometry"]["coordinates"])
+    return prepare_track(obj)
 
+def prepare_track(track):
+    return LineString(track["features"][0]["geometry"]["coordinates"])
 
 def get_track(line, path_base):
     return [
@@ -58,12 +60,11 @@ def process_raw_vehicles(df, track):
     mask_0 = (df["direction"] == "0") | (df["direction"] == "90")
     mask_1 = (df["direction"] == "180") | (df["direction"] == "270")
     df_0 = df.loc[mask_0]
-    df_1 = df.loc[mask_1]
-
-    df_0["relative_position"] = findRelativePositions(df_0, track[0])
     df_0["direction_id"] = 0
-    df_1["relative_position"] = findRelativePositions(df_1, track[1])
+    df_1 = df.loc[mask_1]
     df_1["direction_id"] = 1
+    df_0["relative_position"] = findRelativePositions(df_0, track[0])
+    df_1["relative_position"] = findRelativePositions(df_1, track[1])
     df = pd.concat([df_0, df_1])
 
     df["datetime"] = pd.to_datetime(df["report_time"], utc=True)

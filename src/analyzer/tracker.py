@@ -32,6 +32,10 @@ def analyzeSelection(log, stations, line):
 
 
 def getTrips(log):
+    # TODO: We should revise how this works
+    # It might be better to use a dict of vehicles to keep track of direction, trip_id and position
+    # then increment a counter every time direction changes or position goes backwards
+    # That way we only need to sort by datetime
     vehicles = log.sort_values(["vehicle_id", "datetime"])
     vehicles.loc[:, "trip_id"] = 0
     trip_id = 0
@@ -41,6 +45,7 @@ def getTrips(log):
         if (
             position.direction != previous_direction
             or position.vehicle_id != previous_vehicle
+            # TODO: OR if position.relative_position < previous position for the same vehicle
         ):
             trip_id += 1
         previous_direction = position.direction

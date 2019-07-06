@@ -4,7 +4,7 @@ from shapely.geometry import Point
 
 
 def findRelativePositions(positions, line):
-    # this can be done faster using lambda func?
+    # TODO: Add caching by using a dictionary with tuples (coordinates) as keys
     return positions.geometry.apply(lambda xy: line.project(xy) / line.length)
 
 
