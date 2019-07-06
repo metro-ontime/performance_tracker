@@ -10,3 +10,4 @@ def get_schedule(ctx):
     path = os.path.join(ctx.config["local_data"], "GTFS")
     os.makedirs(path, exist_ok=True)
     zf.extractall(path)
+    return "Successfully downloaded & extracted GTFS schedule data"

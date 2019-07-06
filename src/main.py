@@ -2,28 +2,24 @@ import sys
 import json
 import pendulum
 from context import Context
-from get_vehicles import get_vehicles
-from get_schedule import get_schedule
-from process_schedule import process_schedule
+from actions import ACTIONS
 
-with open('fs_config.json', 'r') as infile:
-    config = json.load(infile)
-
-def main(command, datetime=pendulum.now()):
-    ctx = Context(config)
-    actions = {
-        'GET_VEHICLES': lambda ctx, dt: get_vehicles(ctx),
-        'GET_SCHEDULE': lambda ctx, dt: get_schedule(ctx),
-        'PROCESS_SCHEDULE': lambda ctx, dt: process_schedule(ctx, dt)
-        # 'PROCESS_VEHICLES': process_vehicles,
-        # 'ESTIMATE_ARRIVALS': estimate_arrivals,
-    }
-    output = actions[command](ctx, datetime)
+def main(command, datetime=None):
+    with open('fs_config.json', 'r') as infile:
+        ctx = Context(json.load(infile))
+    if command in ['PROCESS_VEHICLES', 'ESTIMATE_ARRIVALS'] and datetime is None:
+        datetime = select_correct_datetime(pendulum.now())
+    elif datetime is None:
+        datetime = pendulum.now()
+    output = ACTIONS[command](ctx, datetime)
     ctx.logger(output, datetime)
     return 0
 
 if __name__ == "__main__":
-    if (len(sys.argv) < 2):
+    if len(sys.argv) < 2:
         print("Please provide command.")
         exit()
-    main(sys.argv[1])
+    if len(sys.argv) == 2:
+        main(sys.argv[1])
+    else:
+        main(sys.argv[1], sys.argv[2])
