@@ -1,6 +1,6 @@
-from lib.get_vehicles import get_vehicles
-from lib.get_schedule import get_schedule
-from lib.process_schedule import process_schedule
+from library.get_vehicles import get_vehicles
+from library.get_schedule import get_schedule
+from library.process_schedule import process_schedule
 
 ACTIONS = {
     'GET_VEHICLES': lambda ctx, dt: get_vehicles(ctx),

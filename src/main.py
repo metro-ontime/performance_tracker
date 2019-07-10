@@ -1,7 +1,7 @@
 import sys
 import json
 import pendulum
-from lib.context import Context
+from library.context import Context
 from actions import ACTIONS
 
 def main(command, datetime=None):
