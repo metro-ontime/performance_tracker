@@ -12,9 +12,9 @@ def process_vehicles(ctx, datetime):
     lines = ctx.config["metro_lines"]
     date = datetime.in_tz(ctx.config["timezone"]).format("YYYY-MM-DD")
     for line in lines:
-        path = ctx.tmp.get_abs_path(f"tracking/{agency}/{line}/full_day.csv")
+        path = ctx.tmp.get_abs_path(f"tracking/{agency}/{line}/preprocessed.csv")
         df = pd.read_csv(path, index_col=0)
         tracks = get_track(line, ctx.config["local_data"])
         processed = process_raw_vehicles(df, tracks)
-        ctx.datastore.write(f"tracking/{agency}/{line}/{date}.csv", processed.to_csv())
+        ctx.tmp.write(f"tracking/{agency}/{line}/processed.csv", processed.to_csv())
     return 0

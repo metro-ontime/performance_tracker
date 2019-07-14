@@ -11,7 +11,7 @@ def prepare_vehicles(ctx):
         except:
             return 1
         
-        df_path = ctx.tmp.get_abs_path(f"tracking/{agency}/{line}/full_day.csv")
+        df_path = ctx.tmp.get_abs_path(f"tracking/{agency}/{line}/preprocessed.csv")
         try:
             df = pd.read_csv(df_path, index_col=0)
             df = pd.concat([df, latest], ignore_index=True, sort=False, join="inner")
