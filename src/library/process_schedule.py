@@ -31,4 +31,4 @@ def process_schedule(ctx, datetime):
         ]
         ctx.datastore.write(f"schedule/{line_no}_{agency}/{start_date}.csv", line_schedule.to_csv())
 
-    return "Successfully processed GTFS schedule data and saved line schedules"
+    return 0

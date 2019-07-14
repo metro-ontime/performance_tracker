@@ -17,6 +17,7 @@ def process_vehicles(ctx, datetime):
         track = get_track(ctx, line)
         processed = process_raw_vehicles(raw_df, track)
         ctx.datastore.write(f"vehicle_tracking/processed/{line}_{agency}/", processed.to_csv())
+    return 0
 
 def get_track(ctx, line):
     return [

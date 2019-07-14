@@ -11,7 +11,7 @@ def get_vehicles(ctx):
     for line in lines:
         data = get_vehicles_for_line(base_url, agency, line)
         ctx.tmp.write(f"tracking/{agency}/{line}/latest.json", data)
-    return "Successfully downloaded realtime vehicle data"
+    return 0
 
 
 def get_vehicles_for_line(base_url, agency, line):

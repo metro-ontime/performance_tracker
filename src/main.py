@@ -11,9 +11,15 @@ def main(command, datetime=None):
         datetime = select_correct_datetime(pendulum.now())
     elif datetime is None:
         datetime = pendulum.now()
-    output = ACTIONS[command](ctx, datetime)
-    ctx.logger(output, datetime)
-    return 0
+
+    outcome = ACTIONS[command](ctx, datetime)
+
+    if outcome is 0:
+        ctx.logger(f"{command} completed successfully")
+        return 0
+    else:
+        ctx.logger(f"{command} failed")
+        return 1
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
