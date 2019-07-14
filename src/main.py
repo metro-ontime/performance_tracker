@@ -7,10 +7,7 @@ from actions import ACTIONS
 def main(command, datetime=None):
     with open('fs_config.json', 'r') as infile:
         ctx = Context(json.load(infile))
-    if command in ['PROCESS_VEHICLES', 'ESTIMATE_ARRIVALS'] and datetime is None:
-        datetime = select_correct_datetime(pendulum.now())
-    elif datetime is None:
-        datetime = pendulum.now()
+    datetime = pendulum.now()
 
     outcome = ACTIONS[command](ctx, datetime)
 

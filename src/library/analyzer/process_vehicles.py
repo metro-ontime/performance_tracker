@@ -9,10 +9,10 @@ import pandas as pd
 import geopandas as gpd
 from shapely.geometry import LineString
 
-from analyzer.geoHelpers import findRelativePositions, toGDF
-from analyzer.tracker import getTrips
-from analyzer.nextBusData import NextBusData
-from helpers.datetimefs import DateTimeFS
+from .geoHelpers import findRelativePositions, toGDF
+from .tracker import getTrips
+from .nextBusData import NextBusData
+from ..helpers.datetimefs import DateTimeFS
 
 
 def determine_vehicle_paths(vehicle_path_base, start_datetime, end_datetime):
@@ -33,7 +33,7 @@ def preprocess(path):
 
 
 def load_track_by_direction(direction, line, path_base):
-    track_path = f"{path_base}/{line}_{direction}.geojson"
+    track_path = os.path.join(path_base, f"line_info/{line}/{line}_{direction}.geojson")
     with open(track_path) as infile:
         obj = json.load(infile)
     return prepare_track(obj)
@@ -51,18 +51,18 @@ def process_raw_vehicles(df, track):
     df = df.drop_duplicates(
         subset=["report_time", "latitude", "longitude", "vehicle_id"]
     )
-    df = df[df["predictable"] == "true"]
+    df = df[df["predictable"] == True]
 
     df["latitude"] = pd.to_numeric(df.latitude)
     df["longitude"] = pd.to_numeric(df.longitude)
     df = toGDF(df)
 
-    mask_0 = (df["direction"] == "0") | (df["direction"] == "90")
-    mask_1 = (df["direction"] == "180") | (df["direction"] == "270")
+    mask_0 = (df["direction"] == 0) | (df["direction"] == 90)
+    mask_1 = (df["direction"] == 180) | (df["direction"] == 270)
     df_0 = df.loc[mask_0]
-    df_0["direction_id"] = 0
+    df_0 = df_0.assign(direction_id = 0)
     df_1 = df.loc[mask_1]
-    df_1["direction_id"] = 1
+    df_1 = df_1.assign(direction_id = 1)
     df_0["relative_position"] = findRelativePositions(df_0, track[0])
     df_1["relative_position"] = findRelativePositions(df_1, track[1])
     df = pd.concat([df_0, df_1])

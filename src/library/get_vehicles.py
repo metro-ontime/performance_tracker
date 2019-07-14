@@ -10,7 +10,7 @@ def get_vehicles(ctx):
     base_url = ctx.config["vehicle_api_url"]
     for line in lines:
         data = get_vehicles_for_line(base_url, agency, line)
-        ctx.tmp.write(f"tracking/{agency}/{line}/latest.json", data)
+        ctx.tmp.write_json(f"tracking/{agency}/{line}/latest.json", data)
     return 0
 
 
