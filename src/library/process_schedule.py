@@ -1,7 +1,6 @@
 import os
 import pendulum
 import pandas as pd
-from pandas import read_csv
 from .analyzer.calendar import Calendar
 from .analyzer.schedule import scheduleTimeToDateTime
 
@@ -10,9 +9,9 @@ def process_schedule(ctx, datetime):
     start_date = datetime.in_tz(ctx.config["timezone"]).format("YYYY-MM-DD")
 
     # Load all data
-    full_schedule = read_csv("data/GTFS/stop_times.txt")
-    calendar = Calendar("data/GTFS/calendar.txt")
-    trips = read_csv("data/GTFS/trips.txt")
+    full_schedule = pd.read_csv(ctx.tmp.get_abs_path("GTFS/stop_times.txt"))
+    calendar = Calendar(ctx.tmp.get_abs_path("GTFS/calendar.txt"))
+    trips = pd.read_csv(ctx.tmp.get_abs_path("GTFS/trips.txt"))
 
     # pre-processing (operations on full datasets)
     services_running_today = calendar.services_running_on(start_date).service_id

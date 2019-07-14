@@ -21,3 +21,6 @@ class FS_resource:
                 return json.dump(data, outfile)
             except:
                 return outfile.write(data)
+
+    def get_abs_path(self, path):
+        return os.path.join(self.base_dir, path)

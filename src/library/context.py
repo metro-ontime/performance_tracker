@@ -11,6 +11,7 @@ class Context:
     def __init__(self, config):
         self.config = config
         self.datastore = datastores[config["datastore"]["name"]](config["datastore"]["path"])
+        self.tmp = FS_resource(config["tmp_dir"])
 
     def logger(self, stuff, datetime=pendulum.now()):
-        print(datetime, stuff)
+        print(datetime, stuff, sep=",")
