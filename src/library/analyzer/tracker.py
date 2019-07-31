@@ -41,15 +41,17 @@ def getTrips(log):
     trip_id = 0
     previous_direction = 0
     previous_vehicle = 0
-    for index, position in vehicles.iterrows():
+    previous_position = 0
+    for index, row in vehicles.iterrows():
         if (
-            position.direction != previous_direction
-            or position.vehicle_id != previous_vehicle
-            # TODO: OR if position.relative_position < previous position for the same vehicle
+            row.direction != previous_direction
+            or row.vehicle_id != previous_vehicle
+            or row.relative_position < previous_position
         ):
             trip_id += 1
-        previous_direction = position.direction
-        previous_vehicle = position.vehicle_id
+        previous_direction = row.direction
+        previous_vehicle = row.vehicle_id
+        previous_position = row.relative_position
         vehicles.loc[index, "trip_id"] = trip_id
     return vehicles
 
