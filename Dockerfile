@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
   libproj-dev \
   libgeos-dev
 
+COPY ./src /src
 COPY ./requirements.txt /src/requirements.txt
 
 WORKDIR /src
