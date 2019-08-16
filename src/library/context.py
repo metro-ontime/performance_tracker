@@ -1,4 +1,5 @@
 import pendulum
+import os
 from .helpers.s3_resource import S3_resource
 from .helpers.fs_resource import FS_resource
 
@@ -7,11 +8,30 @@ datastores = {
     "filesystem": FS_resource
 }
 
-class Context:
-    def __init__(self, config):
-        self.config = config
-        self.datastore = datastores[config["datastore"]["name"]](config["datastore"]["path"])
-        self.tmp = FS_resource(config["tmp_dir"])
+evKeys = [
+    "LOCAL_DATA",
+    "DATASTORE_NAME",
+    "DATASTORE_PATH",
+    "TMP_DIR",
+    "METRO_LINES",
+    "METRO_AGENCY",
+    "TIMEZONE",
+    "SCHEDULE_URL",
+    "VEHICLE_API_URL"
+]
 
+class Context:
+    def __init__(self):
+        self.config = {}
+
+        for k in evKeys: 
+           self.config[k]=os.environ[k]
+        
+        self.config["METRO_LINES"] = [int(line) for line in self.config["METRO_LINES"].split(",")]
+        print(self.config)
+        self.datastore = datastores[self.config["DATASTORE_NAME"]](self.config["DATASTORE_PATH"])
+        self.tmp = FS_resource(self.config["TMP_DIR"])
+        print(self.config)
+        
     def logger(self, stuff, datetime=pendulum.now()):
         print(datetime, stuff, sep=",")

@@ -5,8 +5,8 @@ from .analyzer.calendar import Calendar
 from .analyzer.schedule import scheduleTimeToDateTime
 
 def process_schedule(ctx, datetime):
-    agency = ctx.config["metro_agency"]
-    start_date = datetime.in_tz(ctx.config["timezone"]).format("YYYY-MM-DD")
+    agency = ctx.config["METRO_AGENCY"]
+    start_date = datetime.in_tz(ctx.config["TIMEZONE"]).format("YYYY-MM-DD")
 
     # Load all data
     full_schedule = pd.read_csv(ctx.tmp.get_abs_path("GTFS/stop_times.txt"))
