@@ -5,9 +5,9 @@ import requests
 import pendulum
 
 def get_vehicles(ctx):
-    agency = ctx.config["metro_agency"]
-    lines = ctx.config["metro_lines"]
-    base_url = ctx.config["vehicle_api_url"]
+    agency = ctx.config["METRO_AGENCY"]
+    lines = ctx.config["METRO_LINES"]
+    base_url = ctx.config["VEHICLE_API_URL"]
     for line in lines:
         data = get_vehicles_for_line(base_url, agency, line)
         ctx.tmp.write_json(f"tracking/{agency}/{line}/latest.json", data)

@@ -2,8 +2,8 @@ import pandas as pd
 from library.analysis.nextbus import NextBusData
 
 def prepare_vehicles(ctx):
-    lines = ctx.config["metro_lines"]
-    agency = ctx.config["metro_agency"]
+    lines = ctx.config["METRO_LINES"]
+    agency = ctx.config["METRO_AGENCY"]
     for line in lines:
         data = ctx.tmp.load_json(f"tracking/{agency}/{line}/latest.json")
         try:

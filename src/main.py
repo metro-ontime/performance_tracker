@@ -5,8 +5,7 @@ from library.context import Context
 from actions import ACTIONS
 
 def main(command, datetime=None):
-    with open('fs_config.json', 'r') as infile:
-        ctx = Context(json.load(infile))
+    ctx = Context()
     datetime = pendulum.now()
 
     outcome = ACTIONS[command](ctx, datetime)
