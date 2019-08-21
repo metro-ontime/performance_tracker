@@ -28,10 +28,8 @@ class Context:
            self.config[k]=os.environ[k]
         
         self.config["METRO_LINES"] = [int(line) for line in self.config["METRO_LINES"].split(",")]
-        print(self.config)
         self.datastore = datastores[self.config["DATASTORE_NAME"]](self.config["DATASTORE_PATH"])
         self.tmp = FS_resource(self.config["TMP_DIR"])
-        print(self.config)
         
-    def logger(self, stuff, datetime=pendulum.now()):
+    def logger(self, stuff, datetime=pendulum.now('UTC')):
         print(datetime, stuff, sep=",")

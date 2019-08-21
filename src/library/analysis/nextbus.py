@@ -4,9 +4,8 @@ import pendulum
 
 class NextBusData:
     def __init__(self, data):
-        obj = data
-        self.last_report_time = get_last_report_time(obj)
-        self.vehicles = get_vehicles(obj, self.last_report_time)
+        self.last_report_time = get_last_report_time(data)
+        self.vehicles = get_vehicles(data, self.last_report_time)
 
 
 def get_vehicles(data, last_report_time):
@@ -15,6 +14,8 @@ def get_vehicles(data, last_report_time):
     except:
         if type(data["vehicle"]) is dict:
             df = pd.DataFrame(data["vehicle"], index=[0])
+        else:
+            raise Exception('Unrecognised vehicle data')
 
     df = matchColumnNames(df)
     min_secs_since_report = min(list(map(int, list(df["seconds_since_report"]))))

@@ -6,7 +6,8 @@ from actions import ACTIONS
 
 def main(command, datetime=None):
     ctx = Context()
-    datetime = pendulum.now()
+    if datetime is None:
+        datetime = pendulum.now()
 
     outcome = ACTIONS[command](ctx, datetime)
 

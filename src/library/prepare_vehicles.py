@@ -8,7 +8,8 @@ def prepare_vehicles(ctx):
         data = ctx.tmp.load_json(f"tracking/{agency}/{line}/latest.json")
         try:
             latest = NextBusData(data).vehicles
-        except:
+        except Exception as exc:
+            ctx.logger(exc)
             return 1
         
         df_path = ctx.tmp.get_abs_path(f"tracking/{agency}/{line}/preprocessed.csv")
