@@ -10,12 +10,16 @@ class NextBusData:
 
 def get_vehicles(data, last_report_time):
     try:
-        df = pd.DataFrame(data["vehicle"])
+        vehicle_data = data["vehicle"]
     except:
-        if type(data["vehicle"]) is dict:
-            df = pd.DataFrame(data["vehicle"], index=[0])
-        else:
-            raise Exception('Unrecognised vehicle data')
+        return pd.DataFrame(columns=["vehicle_id","direction","report_time","latitude","longitude","predictable"])
+
+    if type(vehicle_data) is dict:
+        df = pd.DataFrame(data["vehicle"], index=[0])
+    elif type(vehicle_data) is list:
+        df = pd.DataFrame(vehicle_data)
+    else:
+        raise Exception('Unrecognised vehicle data')
 
     df = matchColumnNames(df)
     min_secs_since_report = min(list(map(int, list(df["seconds_since_report"]))))
