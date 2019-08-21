@@ -24,14 +24,18 @@ You can also contact us via the issue tracker in this repository.
 
 1. Fork this repository
 2. Clone your fork
-`git clone https://github.com/<your_username>/performance_tracker.git`
+```
+git clone https://github.com/<your_username>/performance_tracker.git
+```
 3. Build the docker image
 ```
 cd performance_tracker
 docker build -t performance_tracker .
 ```
 4. Add a .env file based on sample_env
-`cp sample_env .env`
+```
+cp sample_env .env
+```
 5. Run the docker container with the repo as a volume mount for local development
 ```
 docker run -it \
@@ -44,7 +48,9 @@ docker run -it \
 ### How the App Works:
 
 Once in the docker container interactive shell, the default working directory is /app. From this directory you can execute the python app as follows:
-`python ./src/main.py <COMMAND>`
+```
+python ./src/main.py <COMMAND>
+```
 where `<COMMAND>` is a command defined in `src/actions.py`. Commands define the various behaviors of the tool.
 
 ## Contributing:

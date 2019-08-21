@@ -1,0 +1,9 @@
+LOCAL_DATA=/app/data
+DATASTORE_NAME=filesystem
+DATASTORE_PATH=/app/data/output
+TMP_DIR=/app/data/tmp
+METRO_LINES=801,802,803,804,805,806
+METRO_AGENCY=lametro-rail
+TIMEZONE=America/Los_Angeles
+SCHEDULE_URL=https://gitlab.com/LACMTA/gtfs_rail/raw/master/gtfs_rail.zip
+VEHICLE_API_URL=http://webservices.nextbus.com/service/publicJSONFeed
