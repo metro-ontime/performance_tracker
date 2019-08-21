@@ -9,7 +9,12 @@ def main(command, datetime=None):
     if datetime is None:
         datetime = pendulum.now()
 
-    outcome = ACTIONS[command](ctx, datetime)
+    try:
+        outcome = ACTIONS[command](ctx, datetime)
+    except Exception as exc:
+        ctx.logger(exc)
+        ctx.logger(f"{command} failed")
+        return 1
 
     if outcome is 0:
         ctx.logger(f"{command} completed successfully")
