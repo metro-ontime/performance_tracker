@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y \
   libgeos-dev
 
 COPY ./src /app/src
-COPY ./data /app/data
+COPY ./data/GIS /app/data/GIS
+COPY ./data/line_info /app/data/line_info
 COPY ./tests /app/tests
 COPY ./requirements.txt /app/requirements.txt
 
