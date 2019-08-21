@@ -11,6 +11,8 @@ data/*
 !data/GIS
 !data/line_info
 *config.json
+run.sh
+.DS_Store
 # Random jupyter notebooks!!
 Untitled*.ipynb
 
