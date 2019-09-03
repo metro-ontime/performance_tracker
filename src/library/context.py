@@ -17,7 +17,8 @@ evKeys = [
     "METRO_AGENCY",
     "TIMEZONE",
     "SCHEDULE_URL",
-    "VEHICLE_API_URL"
+    "VEHICLE_API_URL",
+    "LOG_TIMESTAMPS"
 ]
 
 class Context:
@@ -32,4 +33,7 @@ class Context:
         self.tmp = FS_resource(self.config["TMP_DIR"])
         
     def logger(self, stuff, datetime=pendulum.now('UTC')):
-        print(datetime, stuff, sep=",")
+        if self.config["LOG_TIMESTAMPS"] is "TRUE":
+            print(datetime, stuff, sep=",")
+        else:
+            print(stuff)

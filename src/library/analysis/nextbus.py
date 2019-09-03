@@ -12,7 +12,7 @@ def get_vehicles(data, last_report_time):
     try:
         vehicle_data = data["vehicle"]
     except:
-        return pd.DataFrame(columns=["vehicle_id","direction","report_time","latitude","longitude","predictable"])
+        return pd.DataFrame(columns=["line", "vehicle_id","direction","report_time","latitude","longitude","predictable"])
 
     if type(vehicle_data) is dict:
         df = pd.DataFrame(data["vehicle"], index=[0])
@@ -31,6 +31,7 @@ def get_vehicles(data, last_report_time):
     )
     return df[
         [
+            "line",
             "vehicle_id",
             "direction",
             "report_time",
@@ -69,5 +70,6 @@ def matchColumnNames(df):
             "secsSinceReport": "seconds_since_report",
             "lat": "latitude",
             "lon": "longitude",
+            "routeTag": "line"
         }
     )
