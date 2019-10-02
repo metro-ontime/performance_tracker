@@ -33,7 +33,7 @@ class Context:
         self.tmp = FS_resource(self.config["TMP_DIR"])
         
     def logger(self, stuff, datetime=pendulum.now('UTC')):
-        if self.config["LOG_TIMESTAMPS"] is "TRUE":
+        if self.config["LOG_TIMESTAMPS"] == "TRUE":
             print(datetime, stuff, sep=",")
         else:
             print(stuff)
