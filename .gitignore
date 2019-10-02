@@ -13,6 +13,7 @@ data/*
 *config.json
 run.sh
 .DS_Store
+.env*
 # Random jupyter notebooks!!
 Untitled*.ipynb
 

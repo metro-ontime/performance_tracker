@@ -29,6 +29,6 @@ def process_schedule(ctx, datetime):
         line_schedule = line_schedule[
             ["datetime", "trip_id", "stop_id", "stop_sequence", "direction_id"]
         ]
-        ctx.datastore.write(f"schedule/{line_no}_{agency}/{start_date}.csv", line_schedule.to_csv())
+        ctx.datastore.write(f"schedule/{agency}/{line_no}/{start_date}.csv", line_schedule.to_csv())
 
     return 0
