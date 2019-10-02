@@ -18,7 +18,9 @@ evKeys = [
     "TIMEZONE",
     "SCHEDULE_URL",
     "VEHICLE_API_URL",
-    "LOG_TIMESTAMPS"
+    "LOG_TIMESTAMPS",
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY"
 ]
 
 class Context:

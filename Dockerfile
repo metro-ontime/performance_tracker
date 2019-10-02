@@ -10,6 +10,7 @@ COPY ./data/GIS /app/data/GIS
 COPY ./data/line_info /app/data/line_info
 COPY ./tests /app/tests
 COPY ./requirements.txt /app/requirements.txt
+COPY ./tasks /app/tasks
 
 WORKDIR /app
 
