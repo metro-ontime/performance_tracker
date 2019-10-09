@@ -23,6 +23,9 @@ class S3_resource:
     def upload(self, dest_path, source_path):
         self.s3.Object(key=dest_path).upload_file(Filename=source_path)
         return True
+    
+    def download(self, dest_path, source_path):
+        return self.s3.Object(key=source_path).download_file(Filename=dest_path)
 
     def get_abs_path(self, key):
         location = boto3.client('s3').get_bucket_location(Bucket=self.bucket_name)['LocationConstraint']
