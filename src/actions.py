@@ -12,7 +12,7 @@ ACTIONS = {
     'GET_VEHICLES': lambda ctx, dt: get_vehicles(ctx),
     'PREPROCESS_VEHICLES': lambda ctx, dt: preprocess_vehicles(ctx),
     'UPLOAD_PREPROCESSED': lambda ctx, dt: upload_preprocessed(ctx),
-    'PROCESS_VEHICLE_DATA': lambda ctx, dt: process_vehicles(ctx, dt),
+    'PROCESS_VEHICLES': lambda ctx, dt: process_vehicles(ctx, dt),
     'GET_SCHEDULE': lambda ctx, dt: get_schedule(ctx),
     'PROCESS_SCHEDULE': lambda ctx, dt: process_schedule(ctx, dt),
     'PRODUCE_SUMMARY': lambda ctx, dt: produce_summary(ctx, dt),
