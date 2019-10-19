@@ -17,10 +17,10 @@ def estimate_arrivals(ctx ,datetime):
     master_summary = {}
 
     for line in range(801, 807):
-        schedule_base_path = f"data/schedule/{line}_{agency}"
+        schedule_base_path = f"data/tmp/schedule/{agency}/{line}"
         schedule_meta = get_appropriate_timetable(datetime, schedule_base_path)
         print(schedule_meta["path"])
-        vehicles_base_path = f"data/vehicle_tracking/processed/{line}_{agency}"
+        vehicles_base_path = f"data/tmp/tracking/{agency}/{line}/processed"
         vehicles_meta = get_appropriate_timetable(datetime, vehicles_base_path)
         print(vehicles_meta["path"])
 
@@ -51,7 +51,7 @@ def estimate_arrivals(ctx ,datetime):
             estimates = match_previous_stop_times(estimates)
             print("Match previous stop times: completed at ", pendulum.now("UTC"))
             ###
-            print("Completed heavy calculations at", pendulum.now("UTC"))
+            print(f"Completed heavy calculations for line {line} and direction {direction} at", pendulum.now("UTC"))
 
             # append this set of estimates to list
             all_estimates.append(estimates)
@@ -78,3 +78,5 @@ def estimate_arrivals(ctx ,datetime):
     summary_path = os.path.join(summary_dir, formatted_time) + ".json"
     with open(summary_path, "w") as outfile:
         json.dump(master_summary, outfile)
+    
+    return 0

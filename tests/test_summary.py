@@ -5,7 +5,7 @@ sys.path.append("src")
 
 import numpy as np
 import json
-from library.analyzer.summary import replace_all_nans
+from src.library.analyzer.summary import replace_all_nans
 
 
 def test_nans():

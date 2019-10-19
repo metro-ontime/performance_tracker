@@ -17,5 +17,5 @@ ACTIONS = {
     'PROCESS_SCHEDULE': lambda ctx, dt: process_schedule(ctx, dt),
     'PRODUCE_SUMMARY': lambda ctx, dt: produce_summary(ctx, dt),
     'UPLOAD_SUMMARY': lambda ctx, dt: upload_latest(ctx, dt),
-    'ESTIMATE_ARRIVALS': lambda ctx, dt: estimate_arrivals(ctx)
+    'ESTIMATE_ARRIVALS': lambda ctx, dt: estimate_arrivals(ctx, dt)
 }

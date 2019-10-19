@@ -19,7 +19,7 @@ def process_vehicles(ctx, datetime):
             lineData = allData[allData['line']==line] 
             tracks = get_track(line, ctx.config["LOCAL_DATA"])
             processed = process_raw_vehicles(lineData, tracks)
-            ctx.tmp.write(f"tracking/{agency}/{line}/processed.csv", processed.to_csv())
+            ctx.tmp.write(f"tracking/{agency}/{line}/processed/{date}.csv", processed.to_csv())
         except Exception as e:
             print(datetime, e)
             continue

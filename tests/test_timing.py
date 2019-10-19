@@ -4,7 +4,7 @@ import sys
 
 sys.path.append("src")
 
-from library.helpers.timing import (
+from src.library.helpers.timing import (
     get_appropriate_timetable,
     get_date_if_exists_otherwise_previous,
     check_datetime,
