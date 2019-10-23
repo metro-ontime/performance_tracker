@@ -1,6 +1,8 @@
+#!/usr/bin/env python3.6
 import sys
 import json
 import pendulum
+import traceback
 from library.context import Context
 from actions import ACTIONS
 
@@ -8,11 +10,11 @@ def main(command, datetime=None):
     ctx = Context()
     if datetime is None:
         datetime = pendulum.now()
-
     try:
         outcome = ACTIONS[command](ctx, datetime)
     except Exception as exc:
         ctx.logger(exc)
+        traceback.print_tb(exc.__traceback__)
         ctx.logger(f"{command} failed")
         return 1
 
