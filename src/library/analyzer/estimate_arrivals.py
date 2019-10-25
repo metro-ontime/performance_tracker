@@ -6,7 +6,7 @@ def estimate_arrivals(trip_id, trip, stations, direction):
     stations.loc[:, "estimate"] = True
     trip_est = stations
     trip_est.loc[:, "trip_id"] = trip_id
-    trip_est.loc[:, "direction_id"] = direction 
+    trip_est.loc[:, "direction_id"] = direction
     combined = trip.append(trip_est)
     combined = combined.sort_values("relative_position")
     combined = combined.reset_index(drop=True)
