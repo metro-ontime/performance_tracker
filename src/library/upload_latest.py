@@ -10,8 +10,9 @@ def upload_latest(ctx, dt):
         vehicles_meta = get_appropriate_timetable(dt, vehicles_base_path)
         date = vehicles_meta["date"]
         positions_path = vehicles_meta["path"]
-        print('positions_path is ', positions_path)
         ctx.datastore.upload(f"tracking/{agency}/{line}" , positions_path),
 
-    summary_path = f"data/summaries/{agency}/{date}.json"
+    summary_path = os.path.join(os.getcwd() , f"data/summaries/{agency}/{date}.json")
     ctx.datastore.upload(f"summaries/{agency}/{date}.json" , summary_path)
+    
+    return 0
