@@ -8,9 +8,7 @@ def check_datetime(datetime, dates, formatting):
     if not dates:
         raise Exception("Dates array empty")
     if datetime.format(formatting) in dates:
-        print('date is present!')
         return True
-    print('date not present')
     return False
 
 

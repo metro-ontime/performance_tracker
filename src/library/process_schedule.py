@@ -32,6 +32,6 @@ def process_schedule(ctx, datetime):
         ]
         ctx.tmp.write(storage_path, line_schedule.to_csv())
         if(ctx.config['DATASTORE_NAME'] == 'S3'):
-            ctx.datastore.upload(storage_path, os.path.join('data/tmp/', storage_path))
+            ctx.datastore.upload(storage_path, os.path.join(os.getcwd(), 'data/tmp/', storage_path))
 
     return 0
