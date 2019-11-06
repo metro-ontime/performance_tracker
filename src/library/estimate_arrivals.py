@@ -72,7 +72,7 @@ def estimate_arrivals(ctx ,datetime):
         )
 
     # write master summary
-    summary_dir = f"data/summaries"
+    summary_dir = f"data/summaries/{agency}"
     os.makedirs(summary_dir, exist_ok=True)
     formatted_time = schedule_meta["date"]  # Takes the date of the last processed schedule
     summary_path = os.path.join(summary_dir, formatted_time) + ".json"

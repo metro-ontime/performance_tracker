@@ -19,6 +19,7 @@ def process_schedule(ctx, datetime):
     trips_and_directions = trips_running_today[["trip_id", "direction_id"]]
 
     for line_no in range(801, 807):
+        storage_path = f"schedule/{agency}/{line_no}/{start_date}.csv"
         line_trips = trips_running_today[trips_running_today["route_id"] == line_no]
         line_schedule = full_schedule[full_schedule["trip_id"].isin(line_trips["trip_id"])]
         line_schedule = scheduleTimeToDateTime(line_schedule, start_date)
@@ -29,6 +30,8 @@ def process_schedule(ctx, datetime):
         line_schedule = line_schedule[
             ["datetime", "trip_id", "stop_id", "stop_sequence", "direction_id"]
         ]
-        ctx.tmp.write(f"schedule/{agency}/{line_no}/{start_date}.csv", line_schedule.to_csv())
+        ctx.tmp.write(storage_path, line_schedule.to_csv())
+        if(ctx.config['DATASTORE_NAME'] == 'S3'):
+            ctx.datastore.upload(storage_path, os.path.join(os.getcwd(), 'data/tmp/', storage_path))
 
     return 0
