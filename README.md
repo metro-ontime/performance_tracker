@@ -1,6 +1,6 @@
 # Metro Performance Monitor
 
-### A Health App for the Los Angeles Metro Rail System
+### A Health App for the Los Angeles Metro Rail System (https://la.railstats.org/)
 
 This project, incubated at Hack for LA, tracks LA Metro trains and provides up to date statistics summarizing daily, weekly, monthly and annual performance. Our mission is to monitor and report the number of both on-time and late train arrivals on an ongoing basis for all Metro rail lines in Los Angeles. By publishing these statistics and open-sourcing our methodology, we aim to give riders an accurate and unvarnished picture of the system's state over time. Hopefully, this will correct any public misperception of Metro's track record and help inform decision-makers when assessing future improvements to the system.
 
