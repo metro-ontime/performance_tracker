@@ -1,0 +1,1 @@
+* * * * * docker run --rm --env-file <path>/<to>/<this>/<repo>/.env -v <path>/<to>/<this>/repo:/app ctsexton/performance_tracker_simplify bash tasks/EVERY_MINUTE.sh >> logs
