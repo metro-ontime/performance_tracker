@@ -1,7 +1,4 @@
 import pandas as pd
-import pendulum
-import os
-import json
 from library.analyzer.estimate_arrivals import estimate_arrivals_by_trip
 from library.analyzer.analyze_estimates import (
     match_arrivals_with_schedule,
@@ -12,23 +9,32 @@ def estimate_arrivals(ctx ,datetime):
     from library.helpers.timing import get_appropriate_timetable
     from library.analyzer.summary import statistic_summary
 
-    agency = "lametro-rail"
+    agency = ctx.config["METRO_AGENCY"]
 
     master_summary = {}
 
     for line in range(801, 807):
-        schedule_base_path = f"data/tmp/schedule/{agency}/{line}"
-        schedule_meta = get_appropriate_timetable(datetime, schedule_base_path)
-        print(schedule_meta["path"])
-        vehicles_base_path = f"data/tmp/tracking/{agency}/{line}/processed"
-        vehicles_meta = get_appropriate_timetable(datetime, vehicles_base_path)
-        print(vehicles_meta["path"])
+        schedule_base_path = ctx.datastore.get_abs_path(f"schedule/{agency}/{line}")
+        schedule_metadata = get_appropriate_timetable(datetime, schedule_base_path)
+        vehicles_base_path = ctx.datastore.get_abs_path(f"tracking/{agency}/{line}/processed")
+        vehicles_metadata = get_appropriate_timetable(datetime, vehicles_base_path)
 
-        if not schedule_meta["date"] == vehicles_meta["date"]:
+        if not schedule_metadata["date"] == vehicles_metadata["date"]:
+            ctx.logger(f"Schedule date does not match tracked vehicle data for line {line}")
+            ctx.logger(f"Schedule date: {schedule_metadata['date']}")
+            ctx.logger(f"Tracking data date: {vehicles_metadata['date']}")
             continue
 
-        vehicles = pd.read_csv(vehicles_meta["path"], index_col=0, parse_dates=["datetime"])
-        schedule = pd.read_csv(schedule_meta["path"], index_col=0, parse_dates=["datetime"])
+        try:
+            vehicles = pd.read_csv(vehicles_metadata["path"], index_col=0, parse_dates=["datetime"])
+        except:
+            ctx.logger(f"Couldn't get vehicle data for line {line} at path: {vehicles_metadata['path']}")
+            continue
+        try:
+            schedule = pd.read_csv(schedule_metadata["path"], index_col=0, parse_dates=["datetime"])
+        except:
+            ctx.logger(f"Couldn't get schedule data for line {line} at path: {schedule_metadata['path']}")
+            continue
 
         all_estimates = list()
         for direction in range(2):
@@ -39,19 +45,16 @@ def estimate_arrivals(ctx ,datetime):
             )
             trips = vehicles_direction.groupby(["trip_id"])
 
-            print(
-                f"Beginning heavy calculations for line {line} and direction {direction} at",
-                pendulum.now("UTC"),
-            )
+            ctx.logger(f"Beginning heavy calculations for line {line} and direction {direction}")
             ### Heavy calculations
             estimates = estimate_arrivals_by_trip(trips, stations, direction)
-            print("Estimate arrivals by trip: completed at ", pendulum.now("UTC"))
+            ctx.logger("Finished estimating arrivals by trip")
             estimates = match_arrivals_with_schedule(estimates, schedule_direction)
-            print("Match arrivals with schedule: completed at ", pendulum.now("UTC"))
+            ctx.logger("Finished matching arrivals with schedule")
             estimates = match_previous_stop_times(estimates)
-            print("Match previous stop times: completed at ", pendulum.now("UTC"))
+            ctx.logger("Finished matching previous stop times")
             ###
-            print(f"Completed heavy calculations for line {line} and direction {direction} at", pendulum.now("UTC"))
+            ctx.logger(f"Completed heavy calculations for line {line} and direction {direction}")
 
             # append this set of estimates to list
             all_estimates.append(estimates)
@@ -68,15 +71,11 @@ def estimate_arrivals(ctx ,datetime):
         ]
 
         master_summary[f"{line}_{agency}"] = statistic_summary(
-            all_estimates, schedule, schedule_meta["date"], datetime.to_iso8601_string()
+            all_estimates, schedule, schedule_metadata["date"], datetime.to_iso8601_string()
         )
 
     # write master summary
-    summary_dir = f"data/summaries/{agency}"
-    os.makedirs(summary_dir, exist_ok=True)
-    formatted_time = schedule_meta["date"]  # Takes the date of the last processed schedule
-    summary_path = os.path.join(summary_dir, formatted_time) + ".json"
-    with open(summary_path, "w") as outfile:
-        json.dump(master_summary, outfile)
+    formatted_time = schedule_metadata["date"]  # Takes the date of the last processed schedule
+    ctx.datastore.write_json(f"summaries/{agency}/{formatted_time}.json", master_summary)
     
     return 0

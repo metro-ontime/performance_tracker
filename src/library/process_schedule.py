@@ -9,9 +9,13 @@ def process_schedule(ctx, datetime):
     start_date = datetime.in_tz(ctx.config["TIMEZONE"]).format("YYYY-MM-DD")
 
     # Load all data
-    full_schedule = pd.read_csv(ctx.tmp.get_abs_path("GTFS/stop_times.txt"))
-    calendar = Calendar(ctx.tmp.get_abs_path("GTFS/calendar.txt"))
-    trips = pd.read_csv(ctx.tmp.get_abs_path("GTFS/trips.txt"))
+    try:
+        full_schedule = pd.read_csv(ctx.tmp.get_abs_path("GTFS/stop_times.txt"))
+        calendar = Calendar(ctx.tmp.get_abs_path("GTFS/calendar.txt"))
+        trips = pd.read_csv(ctx.tmp.get_abs_path("GTFS/trips.txt"))
+    except:
+        ctx.logger("Could not find required data for processing the schedule")
+        return 1
 
     # pre-processing (operations on full datasets)
     services_running_today = calendar.services_running_on(start_date).service_id
@@ -30,8 +34,6 @@ def process_schedule(ctx, datetime):
         line_schedule = line_schedule[
             ["datetime", "trip_id", "stop_id", "stop_sequence", "direction_id"]
         ]
-        ctx.tmp.write(storage_path, line_schedule.to_csv())
-        if(ctx.config['DATASTORE_NAME'] == 'S3'):
-            ctx.datastore.upload(storage_path, os.path.join(os.getcwd(), 'data/tmp/', storage_path))
+        ctx.datastore.write(storage_path, line_schedule.to_csv())
 
     return 0

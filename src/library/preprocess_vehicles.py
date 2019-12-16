@@ -4,7 +4,7 @@ from library.analysis.nextbus import NextBusData
 def preprocess_vehicles(ctx):
     lines = ctx.config["METRO_LINES"]
     agency = ctx.config["METRO_AGENCY"]
-    preprocessed_path = ctx.tmp.get_abs_path(f"tracking/{agency}/preprocessed.csv")
+    preprocessed_path = ctx.datastore.get_abs_path(f"tracking/{agency}/preprocessed.csv")
     try:
         df = pd.read_csv(preprocessed_path, index_col=0)
     except:
@@ -23,5 +23,6 @@ def preprocess_vehicles(ctx):
             continue
         df = pd.concat([df, latest], ignore_index=True, sort=False, join="inner")
 
-    ctx.tmp.write(preprocessed_path, df.to_csv())
+    # Write to permanent datastore
+    ctx.datastore.write(preprocessed_path, df.to_csv())
     return 0
