@@ -1,6 +1,6 @@
 # Project Specific:
 
-performance_tracker/logs
+logs
 performance_tracker/.aws
 performance_tracker/data/*
 !performance_tracker/data/line_info
