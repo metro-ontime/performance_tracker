@@ -1,62 +1,36 @@
 import pendulum
 import os
 import pandas as pd
-from .datetimefs import DateTimeFS
 
 
-def check_datetime(datetime, dates, formatting):
-    if not dates:
-        raise Exception("Dates array empty")
-    if datetime.format(formatting) in dates:
-        return True
-    return False
-
-
-def format_date_path(datetime, base_path):
-    yyyy_mm_dd = datetime.format("YYYY-MM-DD")
-    return os.path.join(base_path, f"{yyyy_mm_dd}.csv")
-
-
-def get_date_if_exists_otherwise_previous(datetime, base_path):
-    dtfs = DateTimeFS(base_path)
-    available_dates = dtfs.get_all_dates(tz="America/Los_Angeles")
-    formatted_dates = [date.format("YYYY-MM-DD") for date in available_dates]
+def get_appropriate_timetable(datetime, base_path, ctx):
+    datestring = datetime.in_tz(ctx.config["TIMEZONE"]).format("YYYY-MM-DD")
+    path = os.path.join(base_path, f"{datestring}.csv")
     try:
-        if check_datetime(datetime, formatted_dates, "YYYY-MM-DD"):
-            return datetime
-        elif check_datetime(datetime.subtract(days=1), formatted_dates, "YYYY-MM-DD"):
-            return datetime.subtract(days=1)
-        return None
-    except:
-        return None
-
-
-def get_appropriate_timetable(datetime, base_path):
-    datetime = datetime.in_tz("America/Los_Angeles")
-    file_datetime = get_date_if_exists_otherwise_previous(datetime, base_path)
-    path = format_date_path(file_datetime, base_path)
-    df = pd.read_csv(path, index_col=0)
-    start = first_entry(df)
-    end = last_entry(df)
-    if datetime < start:
-        file_datetime = file_datetime.subtract(days=1)
-        path = format_date_path(file_datetime, base_path)
+        # Try load schedule for today
         df = pd.read_csv(path, index_col=0)
-        start = first_entry(df)
-        end = last_entry(df)
+    except:
+        # If today's schedule not found, we try to find yesterday's
+        ctx.logger(f"Could not find data at {path}")
+        datestring = datetime.in_tz(ctx.config["TIMEZONE"]).subtract(days=1).format("YYYY-MM-DD")
+        path = os.path.join(base_path, f"{datestring}.csv")
+        ctx.logger(f"Trying {path} instead...")
+        try:
+            df = pd.read_csv(path, index_col=0)
+        except:
+            # If yesterday's schedule not found, give up
+            raise Exception(f"Could not find data at {path}")
 
-    return {
-        "path": path,
-        "start": start,
-        "end": end,
-        "data": df,
-        "date": file_datetime.format("YYYY-MM-DD"),
-    }
-
-
-def first_entry(schedule):
-    return pendulum.parse(schedule.datetime.min(), tz="America/Los_Angeles")
-
-
-def last_entry(schedule):
-    return pendulum.parse(schedule.datetime.max(), tz="America/Los_Angeles")
+    start = pendulum.parse(df.datetime.min(), ctx.config["TIMEZONE"])
+    if datetime < start:
+        # This occurs when we have the new schedule for the day,
+        # but the current datetime is earlier than the first scheduled service.
+        # In this case we assume we are still on yesterday's schedule.
+        datestring = datetime.in_tz(ctx.config["TIMEZONE"]).subtract(days=1).format("YYYY-MM-DD")
+        path = os.path.join(base_path, f"{datestring}.csv")
+        try:
+            df = pd.read_csv(path, index_col=0)
+        except:
+            # If yesterday's schedule not found, give up
+            raise Exception(f"Could not find data at {path}")
+    return df
