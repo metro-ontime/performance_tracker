@@ -45,7 +45,7 @@ def estimate_arrivals(ctx ,datetime):
             schedule_direction = schedule[schedule["direction_id"] == direction]
             stations = pd.read_csv(
                 os.path.join(ctx.config["LOCAL_DATA"],
-                f"{line_info/{line}/{line}_{direction}_stations.csv", index_col=0)
+                f"line_info/{line}/{line}_{direction}_stations.csv", index_col=0)
             )
             trips = vehicles_direction.groupby(["trip_id"])
 
