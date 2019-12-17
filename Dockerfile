@@ -5,8 +5,13 @@ RUN apt-get update && apt-get install -y \
   libproj-dev \
   libgeos-dev
 
-COPY ./requirements.txt /src/requirements.txt
+COPY ./src /app/src
+COPY ./data/GIS /app/data/GIS
+COPY ./data/line_info /app/data/line_info
+COPY ./tests /app/tests
+COPY ./requirements.txt /app/requirements.txt
+COPY ./tasks /app/tasks
 
-WORKDIR /src
+WORKDIR /app
 
-RUN pip install -r /src/requirements.txt
+RUN pip install -r /app/requirements.txt

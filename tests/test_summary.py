@@ -1,11 +1,11 @@
 import pytest
 import sys
 
-sys.path.append("../performance_tracker")
+sys.path.append("src")
 
 import numpy as np
 import json
-from analyzer.summary import replace_all_nans
+from src.library.analyzer.summary import replace_all_nans
 
 
 def test_nans():

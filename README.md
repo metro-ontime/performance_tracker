@@ -1,6 +1,6 @@
 # Metro Performance Monitor
 
-### A Health App for the Los Angeles Metro Rail System
+### A Health App for the Los Angeles Metro Rail System (https://la.railstats.org/)
 
 This project, incubated at Hack for LA, tracks LA Metro trains and provides up to date statistics summarizing daily, weekly, monthly and annual performance. Our mission is to monitor and report the number of both on-time and late train arrivals on an ongoing basis for all Metro rail lines in Los Angeles. By publishing these statistics and open-sourcing our methodology, we aim to give riders an accurate and unvarnished picture of the system's state over time. Hopefully, this will correct any public misperception of Metro's track record and help inform decision-makers when assessing future improvements to the system.
 
@@ -22,61 +22,36 @@ You can also contact us via the issue tracker in this repository.
 
 ## Getting Started:
 
-We have a development environment setup that runs Jupyter Lab inside a Docker container. 
-If you want to play around with the code interactively and test out code before converting it to python scripts,
-the Jupyter Lab environment is ideal. To get it running, execute the following:
+1. Fork this repository
+2. Clone your fork
 ```
-git clone https://github.com/metro-ontime/performance_tracker.git
-cd performance_tracker/dev
-bash build.sh <YOUR USERNAME>
-cd ..
-bash start-dev.sh <YOUR USERNAME>
+git clone https://github.com/<your_username>/performance_tracker.git
 ```
-The Jupyter server will provide a token - copy this to your clipboard.
-Then open a browser window and navigate to:
-`localhost:8888/?token=<YOUR TOKEN>`
-This will open Jupyter Lab and give you access to all the files in this repo. 
-All file changes will be saved even after the Docker container is destroyed.
+3. Build the docker image
+```
+cd performance_tracker
+docker build -t performance_tracker .
+```
+4. Add a .env file based on sample_env
+```
+cp sample_env .env
+```
+5. Run the docker container with the repo as a volume mount for local development
+```
+docker run -it \
+  --env-file .env \
+  -v "${pwd}":/app \
+  performance_tracker \
+  /bin/bash
+```
 
 ### How the App Works:
 
-The app is a set of python scripts (located at `performance_tracker/performance_tracker`), which run at varying intervals. 
-You may run these either manually or via a cronjob. The following example uses `query_vehicles.sh`.
-If we want to get the current location of vehicles on a line, from the repo root directory we execute:
+Once in the docker container interactive shell, the default working directory is /app. From this directory you can execute the python app as follows:
 ```
-performance_tracker/query_vehicles.sh <YOUR USERNAME> $(pwd)
+python ./src/main.py <COMMAND>
 ```
-
-The username argument is necessary to ensure Docker runs as your user and not as root.
-Now if you go to `./performance_tracker/data/vehicle_tracking/raw` you will see the files that have been created for each line.
-You can set up a cronjob easily to pull vehicle location data on a schedule. A cronjob set to get data every minute will follow this template:
-```
-*/1 * * * * bash path/to/this_repository/performance_tracker/query_vehicles.sh <YOUR USERNAME> path/to/this_repository
-```
-
-### Setting up a server with git hook:
-
-You can easily setup a server to run this app. This example assumes the server username is 'ubuntu'.
-1. SSH into your server.
-2. Install Docker (https://docs.docker.com/install/overview/)
-3. Enable cron service
-`systemctl start cron`
-4. Clone this repo:
-`git clone https://github.com/metro-ontime/performance_tracker.git`
-5. Execute setup script
-```
-cd performance_tracker/performance_tracker/setup
-bash setup.sh
-```
-6. Then on your local machine add the server git directory (performance_tracker-gitdir) as a git remote.
-```
-git remote add production <YOUR SERVER SSH ALIAS>:~/performance_tracker-gitdir
-```
-7. Push master to production:
-`git push production master`
-
-This should execute the Docker build script and set the cronjob correctly.
-
+where `<COMMAND>` is a command defined in `src/actions.py`. Commands define the various behaviors of the tool.
 
 ## Contributing:
 

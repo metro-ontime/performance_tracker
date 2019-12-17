@@ -1,12 +1,19 @@
 # Project Specific:
 
-performance_tracker/logs
+logs
 performance_tracker/.aws
 performance_tracker/data/*
 !performance_tracker/data/line_info
 !performance_tracker/data/GIS
 .aws
 sample_data
+data/*
+!data/GIS
+!data/line_info
+*config.json
+run.sh
+.DS_Store
+.env*
 # Random jupyter notebooks!!
 Untitled*.ipynb
 
@@ -127,3 +134,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Scripts
+dev.sh
