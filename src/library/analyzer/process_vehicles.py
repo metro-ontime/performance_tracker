@@ -2,34 +2,12 @@ import json
 import os
 import sys
 
-sys.path.append("..")
-
 import pendulum
 import pandas as pd
-import geopandas as gpd
 from shapely.geometry import LineString
 
 from .geoHelpers import findRelativePositions, toGDF
 from .tracker import getTrips
-from .nextBusData import NextBusData
-from ..helpers.datetimefs import DateTimeFS
-
-
-def determine_vehicle_paths(vehicle_path_base, start_datetime, end_datetime):
-    dtfs = DateTimeFS(vehicle_path_base)
-    return dtfs.get_filenames_in_range(
-        ".json", start_datetime.in_tz("UTC"), end_datetime.in_tz("UTC")
-    )
-
-
-def preprocess(path):
-    with open(path, "r") as infile:
-        raw_data = json.load(infile)
-    try:
-        preprocessed = NextBusData(raw_data)
-    except:
-        return None
-    return preprocessed.vehicles
 
 
 def load_track_by_direction(direction, line, path_base):
