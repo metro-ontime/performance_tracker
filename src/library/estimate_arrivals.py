@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import pendulum
 
@@ -6,7 +7,7 @@ from library.analyzer.analyze_estimates import (
     match_arrivals_with_schedule,
     match_previous_stop_times,
 )
-from library.helpers.timing import get_appropriate_timetable
+from library.helpers.timing import get_appropriate_timetable, pandas_datetime_to_pendulum_datetime
 from library.analyzer.summary import statistic_summary
 
 
@@ -30,8 +31,8 @@ def estimate_arrivals(ctx ,datetime):
             ctx.logger(f"Couldn't get vehicle data for line {line}")
             continue
 
-        first_schedule_date = pendulum.parse(schedule.datetime.min(), ctx.config["TIMEZONE"]).format("YYYY-MM-DD")
-        first_vehicles_date = pendulum.parse(vehicles.datetime.min(), ctx.config["TIMEZONE"]).format("YYYY-MM-DD")
+        first_schedule_date = pandas_datetime_to_pendulum_datetime(schedule.datetime.min(), ctx.config["TIMEZONE"]).format("YYYY-MM-DD")
+        first_vehicles_date = pandas_datetime_to_pendulum_datetime(vehicles.datetime.min(), ctx.config["TIMEZONE"]).format("YYYY-MM-DD")
 
         if not first_schedule_date == first_vehicles_date:
             ctx.logger(f"Schedule date does not match tracked vehicle data for line {line}")
@@ -44,8 +45,11 @@ def estimate_arrivals(ctx ,datetime):
             vehicles_direction = vehicles[vehicles["direction_id"] == direction]
             schedule_direction = schedule[schedule["direction_id"] == direction]
             stations = pd.read_csv(
-                os.path.join(ctx.config["LOCAL_DATA"],
-                f"line_info/{line}/{line}_{direction}_stations.csv", index_col=0)
+                os.path.join(
+                    ctx.config["LOCAL_DATA"],
+                    f"line_info/{line}/{line}_{direction}_stations.csv"
+                ),
+                index_col=0
             )
             trips = vehicles_direction.groupby(["trip_id"])
 
@@ -75,7 +79,7 @@ def estimate_arrivals(ctx ,datetime):
         ]
 
         master_summary[f"{line}_{agency}"] = statistic_summary(
-            all_estimates, schedule, schedule_metadata["date"], datetime.to_iso8601_string()
+            all_estimates, schedule, first_schedule_date, datetime.to_iso8601_string()
         )
 
     # write master summary
