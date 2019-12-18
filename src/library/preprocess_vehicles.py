@@ -22,6 +22,7 @@ def preprocess_vehicles(ctx):
             ctx.logger(f"Error parsing vehicle JSON for line {line}: {exc}")
             continue
         df = pd.concat([df, latest], ignore_index=True, sort=False, join="inner")
+        df = df.dropna()
 
     # Write to permanent datastore
     ctx.datastore.write(preprocessed_path, df.to_csv())
