@@ -19,6 +19,8 @@ def estimate_arrivals(trip_id, trip, stations, direction):
     select.loc[:, "weight"] = (select.relative_position - select.previous_pos) / (
         select.next_pos - select.previous_pos
     )
+    print ('select.next_dt is ' , select.next_dt)
+    print ('select.previous_dt is ' , select.previous_dt)
     select.loc[:, "time_interpolation"] = (
         select.next_dt - select.previous_dt
     ) * select.weight
