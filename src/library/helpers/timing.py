@@ -22,7 +22,6 @@ def get_appropriate_timetable(datetime, base_path, ctx):
             raise Exception(f"Could not find data at {path}")
 
     start = pandas_datetime_to_pendulum_datetime(df.datetime.min(), ctx.config["TIMEZONE"])
-    ctx.logger(start)
     if datetime < start:
         # This occurs when we have the new schedule for the day,
         # but the current datetime is earlier than the first scheduled service.
