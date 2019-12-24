@@ -23,7 +23,7 @@ def estimate_arrivals(ctx ,datetime):
             ctx.logger(exc)
             ctx.logger(f"Couldn't get schedule data for line {line}")
             continue
-        vehicles_base_path = ctx.datastore.get_abs_path(f"tracking/{agency}/{line}/processed")
+        vehicles_base_path = ctx.datastore.get_abs_path(f"tracking/processed/{agency}/{line}")
         try:
             vehicles = get_appropriate_timetable(datetime, vehicles_base_path, ctx)
         except Exception as exc:

@@ -1,4 +1,5 @@
 from library import (get_vehicles,
+        record,
         preprocess_vehicles,
         get_schedule,
         process_schedule,
@@ -7,6 +8,7 @@ from library import (get_vehicles,
         estimate_arrivals)
 
 ACTIONS = {
+    'RECORD': lambda ctx, dt: record(ctx, dt),
     'GET_VEHICLES': lambda ctx, dt: get_vehicles(ctx),
     'PREPROCESS_VEHICLES': lambda ctx, dt: preprocess_vehicles(ctx),
     'PROCESS_VEHICLES': lambda ctx, dt: process_vehicles(ctx, dt),

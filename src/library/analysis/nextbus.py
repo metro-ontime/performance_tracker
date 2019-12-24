@@ -1,12 +1,9 @@
 import pandas as pd
 import pendulum
 
-
-class NextBusData:
-    def __init__(self, data):
-        self.last_report_time = get_last_report_time(data)
-        self.vehicles = get_vehicles(data, self.last_report_time)
-
+def parse_nextbus_response(response):
+    last_report_time = get_last_report_time(response)
+    return get_vehicles(response, last_report_time)
 
 def get_vehicles(data, last_report_time):
     try:
