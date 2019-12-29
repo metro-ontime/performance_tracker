@@ -7,6 +7,7 @@ from library.analyzer.process_vehicles import (
 def process_vehicles(ctx, datetime):
     agency = ctx.config["METRO_AGENCY"]
     lines = ctx.config["METRO_LINES"]
+    ctx.logger("Processing vehicle observations for all lines")
 
     for line in lines:
         # - grab the currently applicable schedule
@@ -43,5 +44,6 @@ def process_vehicles(ctx, datetime):
             ctx.logger(e)
             continue
 
+        ctx.logger(f"Saving processed vehicle data for line {line} and date {date}")
         ctx.datastore.write(f"tracking/processed/{agency}/{line}/{date}.csv", processed.to_csv())
     return 0

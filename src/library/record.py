@@ -9,6 +9,7 @@ def record(ctx, datetime):
     lines = ctx.config["METRO_LINES"]
     base_url = ctx.config["VEHICLE_API_URL"]
 
+    ctx.logger("Fetching vehicle position data for all lines...")
     latest_observations = { line:get_vehicles_for_line(base_url, agency, line) for line in lines }
 
     for line in lines:
@@ -43,6 +44,7 @@ def record(ctx, datetime):
         # - Run basic data cleanup
         df = df.dropna()
 
+        ctx.logger(f"Saving observations for line {line} with date: {start}")
         # - write the running list to disk
         ctx.datastore.write(preprocessed_path, df.to_csv())
 
