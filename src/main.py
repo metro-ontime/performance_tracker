@@ -10,6 +10,14 @@ def main(command, datetime=None):
     ctx = Context()
     if datetime is None:
         datetime = pendulum.now()
+    else:
+        try:
+            datetime = pendulum.from_format(datetime, 'YYYY-MM-DD', tz=ctx.config["TIMEZONE"])
+            ctx.logger(f"Running in date override mode with date {datetime.format('YYYY-MM-DD')}.")
+            ctx.logger("This is an experimental feature and may generate incorrect data.")
+        except:
+            ctx.logger("Failed to parse custom datetime argument")
+            return 1
     try:
         outcome = ACTIONS[command](ctx, datetime)
     except Exception as exc:
