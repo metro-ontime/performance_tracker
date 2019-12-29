@@ -46,6 +46,6 @@ def record(ctx, datetime):
 
         ctx.logger(f"Saving observations for line {line} with date: {start}")
         # - write the running list to disk
-        ctx.datastore.write(preprocessed_path, df.to_csv())
+        ctx.datastore.write(f"tracking/preprocessed/{agency}/{line}/{start}.csv", df.to_csv())
 
     return 0

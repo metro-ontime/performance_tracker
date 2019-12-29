@@ -6,6 +6,7 @@ class S3_resource:
     def __init__(self, bucket):
         self.s3 = resource("s3").Bucket(bucket)
         self.bucket_name = bucket
+        self.location = client('s3').get_bucket_location(Bucket=self.bucket_name)['LocationConstraint']
 
     def read(self, path):
         return self.s3.Object(key=path).get()['Body'].read().decode('utf-8')
@@ -28,5 +29,4 @@ class S3_resource:
         return self.s3.Object(key=source_path).download_file(Filename=dest_path)
 
     def get_abs_path(self, key):
-        location = client('s3').get_bucket_location(Bucket=self.bucket_name)['LocationConstraint']
-        return f"https://s3-{location}.amazonaws.com/{self.bucket_name}/{key}"
+        return os.path.join(f"https://{self.bucket_name}.s3-{self.location}.amazonaws.com/", key)
