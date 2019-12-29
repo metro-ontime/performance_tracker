@@ -17,14 +17,14 @@ def estimate_arrivals(ctx ,datetime):
     master_summary = {}
 
     for line in lines:
-        schedule_base_path = ctx.datastore.get_abs_path(f"schedule/{agency}/{line}")
+        schedule_base_path = f"schedule/{agency}/{line}"
         try:
             schedule = get_appropriate_timetable(datetime, schedule_base_path, ctx)
         except Exception as exc:
             ctx.logger(exc)
             ctx.logger(f"Couldn't get schedule data for line {line}")
             continue
-        vehicles_base_path = ctx.datastore.get_abs_path(f"tracking/processed/{agency}/{line}")
+        vehicles_base_path = f"tracking/processed/{agency}/{line}"
         try:
             vehicles = get_appropriate_timetable(datetime, vehicles_base_path, ctx)
         except Exception as exc:

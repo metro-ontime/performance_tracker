@@ -11,7 +11,7 @@ def process_vehicles(ctx, datetime):
 
     for line in lines:
         # - grab the currently applicable schedule
-        schedule_base_path = ctx.datastore.get_abs_path(f"schedule/{agency}/{line}")
+        schedule_base_path = f"schedule/{agency}/{line}"
         try:
             schedule = get_appropriate_timetable(datetime, schedule_base_path, ctx)
             date = pandas_datetime_to_pendulum_datetime(schedule.datetime.min(), ctx.config["TIMEZONE"]).format("YYYY-MM-DD")
