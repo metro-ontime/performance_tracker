@@ -6,8 +6,10 @@ from .analyzer.schedule import scheduleTimeToDateTime
 
 def process_schedule(ctx, datetime):
     agency = ctx.config["METRO_AGENCY"]
+    lines = ctx.config["METRO_LINES"]
     start_date = datetime.in_tz(ctx.config["TIMEZONE"]).format("YYYY-MM-DD")
 
+    ctx.logger(f"Loading schedule for date {start_date}")
     # Load all data
     try:
         full_schedule = pd.read_csv(ctx.tmp.get_abs_path("GTFS/stop_times.txt"))
@@ -22,8 +24,8 @@ def process_schedule(ctx, datetime):
     trips_running_today = trips[trips["service_id"].isin(services_running_today)]
     trips_and_directions = trips_running_today[["trip_id", "direction_id"]]
 
-    for line_no in range(801, 807):
-        line_trips = trips_running_today[trips_running_today["route_id"] == line_no]
+    for line in lines:
+        line_trips = trips_running_today[trips_running_today["route_id"] == line]
         line_schedule = full_schedule[full_schedule["trip_id"].isin(line_trips["trip_id"])]
         line_schedule = scheduleTimeToDateTime(line_schedule, start_date)
         line_schedule = pd.merge(line_schedule, trips_and_directions, on="trip_id")
@@ -33,7 +35,8 @@ def process_schedule(ctx, datetime):
         line_schedule = line_schedule[
             ["datetime", "trip_id", "stop_id", "stop_sequence", "direction_id"]
         ]
-        storage_path = f"schedule/{agency}/{line_no}/{start_date}.csv"
+        storage_path = f"schedule/{agency}/{line}/{start_date}.csv"
+        ctx.logger(f"Saving schedule for line {line} and date {start_date}")
         ctx.datastore.write(storage_path, line_schedule.to_csv())
 
     return 0

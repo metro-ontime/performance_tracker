@@ -5,3 +5,4 @@ from .process_schedule import process_schedule
 from .process_vehicles import process_vehicles
 from .estimate_arrivals import estimate_arrivals
 from .upload_latest import upload_latest
+from .record import record

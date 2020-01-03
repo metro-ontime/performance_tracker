@@ -1,4 +1,4 @@
-from boto3 import resource
+from boto3 import resource, client
 import os
 import json
 
@@ -6,6 +6,7 @@ class S3_resource:
     def __init__(self, bucket):
         self.s3 = resource("s3").Bucket(bucket)
         self.bucket_name = bucket
+        self.s3_client = client("s3")
 
     def read(self, path):
         return self.s3.Object(key=path).get()['Body'].read().decode('utf-8')
@@ -28,5 +29,13 @@ class S3_resource:
         return self.s3.Object(key=source_path).download_file(Filename=dest_path)
 
     def get_abs_path(self, key):
-        location = boto3.client('s3').get_bucket_location(Bucket=self.bucket_name)['LocationConstraint']
-        return f"https://s3-{location}.amazonaws.com/{self.bucket_name}/{key}"
+        try:
+            response = self.s3_client.generate_presigned_url('get_object',
+                                                        Params={'Bucket': self.bucket_name,
+                                                                'Key': key},
+                                                        ExpiresIn=300)
+        except ClientError as e:
+            logging.error(e)
+            return None
+
+        return response

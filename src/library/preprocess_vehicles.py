@@ -1,5 +1,15 @@
 import pandas as pd
-from library.analysis.nextbus import NextBusData
+from library.analysis.nextbus import parse_nextbus_response
+
+# This script is intended to run immediately after
+# downloading new vehicle position data.
+# Generally we would do that every minute.
+# For each line, the process involves:
+# - grab the new JSON response from the API
+# - grab the currently applicable schedule
+# - grab the running list of tracked vehicle positions for this schedule period
+# - append the new JSON to the running list
+# - write the running list to disk
 
 def preprocess_vehicles(ctx):
     lines = ctx.config["METRO_LINES"]
@@ -17,12 +27,13 @@ def preprocess_vehicles(ctx):
             ctx.logger(f"Vehicle data unavailable for line {line}")
             continue
         try:
-            latest = NextBusData(data).vehicles
+            latest = parse_nextbus_response(data)
         except Exception as exc:
             ctx.logger(f"Error parsing vehicle JSON for line {line}: {exc}")
             continue
         df = pd.concat([df, latest], ignore_index=True, sort=False, join="inner")
-        df = df.dropna()
+    
+    df = df.dropna()
 
     # Write to permanent datastore
     ctx.datastore.write(preprocessed_path, df.to_csv())

@@ -1,1 +1,8 @@
-* * * * * docker run --rm --env-file <path>/<to>/<this>/<repo>/.env -v <path>/<to>/<this>/repo:/app ctsexton/performance_tracker_simplify bash tasks/EVERY_MINUTE.sh >> logs
+* * * * * docker run --rm --env-file <path>/<to>/<this>/<repo>/.env -v <path>/<to>/<this>/repo:/app ctsexton/performance_tracker bash tasks/EVERY_MINUTE.sh >> logs
+
+# We process and upload vehicles data every half hour between 5am and 10pm, and once at 2am (PST).
+*/30 0-6,14-23 * * * docker run --rm --env-file <path>/<to>/<this>/<repo>/.env -v <path>/<to>/<this>/repo:/app ctsexton/performance_tracker bash tasks/EVERY_15_MINUTES.sh >> logs
+* 10 * * * docker run --rm --env-file <path>/<to>/<this>/<repo>/.env -v <path>/<to>/<this>/repo:/app ctsexton/performance_tracker bash tasks/EVERY_15_MINUTES.sh >> logs
+
+# Run at 3am, 9am, 3pm and 9pm PST.
+0 5,11,17,23 * * * docker run --rm --env-file <path>/<to>/<this>/<repo>/.env -v <path>/<to>/<this>/repo:/app ctsexton/performance_tracker bash tasks/EVERY_6_HOURS.sh >> logs
