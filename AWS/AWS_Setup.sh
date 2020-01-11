@@ -10,9 +10,10 @@ IMAGE="<image name>"
 set -e
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
-docker pull "$IMAGE"
-usermod -aG docker ubuntu
-newgrp docker
+docker pull $IMAGE
+#make docker invokable without requiring sudo
+sudo usermod -aG docker ubuntu
+sudo newgrp docker
 set +e
 )
 
@@ -20,7 +21,7 @@ set +e
 mkdir /home/ubuntu/docker_config && cat > /home/ubuntu/docker_config/.env <<EOF
 LOCAL_DATA=/app/data
 DATASTORE_NAME=S3
-DATASTORE_PATH=performance-tracker-test
+DATASTORE_PATH=<your bucket name here>
 TMP_DIR=/app/data/tmp
 METRO_LINES=801,802,803,804,805,806
 METRO_AGENCY=lametro-rail
@@ -61,9 +62,9 @@ mkdir /home/ubuntu/scripts
 
 (
 set -e
-cat > /home/ubuntu/scripts/daily_at_2.sh <<EOF
+cat > /home/ubuntu/scripts/every_six_hours.sh <<EOF
 #!/bin/bash
-docker run --rm --env-file /home/ubuntu/docker_config/.env -v /home/ubuntu/data/tmp:/app/data/tmp "$IMAGE" bash ./tasks/DAILY_AT_2AM.sh
+docker run --rm --env-file /home/ubuntu/docker_config/.env -v /home/ubuntu/data/tmp:/app/data/tmp $IMAGE bash ./tasks/EVERY_6_HOURS.sh
 EOF
 set +e
 )
@@ -72,7 +73,7 @@ set +e
 set -e
 cat > /home/ubuntu/scripts/every_minute.sh <<EOF
 #!/bin/bash
-docker run --rm --env-file /home/ubuntu/docker_config/.env -v /home/ubuntu/data/tmp:/app/data/tmp "$IMAGE" bash ./tasks/EVERY_MINUTE.sh
+docker run --rm --env-file /home/ubuntu/docker_config/.env -v /home/ubuntu/data/tmp:/app/data/tmp $IMAGE bash ./tasks/EVERY_MINUTE.sh
 EOF
 set +e
 )
@@ -82,7 +83,7 @@ set +e
 set -e
 cat > /home/ubuntu/scripts/every_hour.sh <<EOF
 #!/bin/bash
-docker run --rm --env-file /home/ubuntu/docker_config/.env -v /home/ubuntu/data/tmp:/app/data/tmp "$IMAGE" bash ./tasks/EVERY_15_MINS.sh
+docker run --rm --env-file /home/ubuntu/docker_config/.env -v /home/ubuntu/data/tmp:/app/data/tmp $IMAGE bash ./tasks/EVERY_15_MINS.sh
 EOF
 set +e
 )
@@ -104,10 +105,11 @@ set +e
 
 (
 set -e
+#change to every 15 min for prod
 cat > every_hour <<EOF
 CRON_TZ=UTC
 SHELL=/bin/bash
-0 * * * * root /home/ubuntu/every_hour.sh 2> >(/home/ubuntu/utils/timestamp_errors.sh) >> /home/ubuntu/logs/output.log 
+0 * * * * root /home/ubuntu/scripts/every_hour.sh 2> >(/home/ubuntu/utils/timestamp_errors.sh) >> /home/ubuntu/logs/output.log 
 EOF
 mv every_hour /etc/cron.d
 set +e
@@ -115,15 +117,15 @@ set +e
 
 (
 set -e
-cat > every_day <<EOF
+cat > every_six_hours <<EOF
 CRON_TZ=UTC
 SHELL=/bin/bash
-* 10 * * * root rm -rf ~/data/tmp && /home/ubuntu/daily_at_2.sh 2> >(/home/ubuntu/utils/timestamp_errors.sh) >> /home/ubuntu/logs/output.log
+0 5,11,17,23 * * * root rm -rf ~/data/tmp && /home/ubuntu/scripts/every_six_hours.sh 2> >(/home/ubuntu/utils/timestamp_errors.sh) >> /home/ubuntu/logs/output.log
 EOF
-mv every_day /etc/cron.d
+mv every_six_hours /etc/cron.d
 set +e
 )
 chmod -R 755 /etc/cron.d
 
-#run the daily script once on launch to obtain schedule for current day
-bash /home/ubuntu/scripts/daily_at_2.sh 2> >(/home/ubuntu/utils/timestamp_errors.sh) >> /home/ubuntu/logs/output.log
+#obtain the current schedule before cron actions fire
+bash /home/ubuntu/scripts/every_six_hours.sh 2> >(/home/ubuntu/utils/timestamp_errors.sh) >> /home/ubuntu/logs/output.log
