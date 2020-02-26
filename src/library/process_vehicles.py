@@ -25,7 +25,7 @@ def process_vehicles(ctx, datetime):
         try:
             data = pd.read_csv(preprocessed_path, index_col=0)
         except:
-            ctx.logger("Could not get preprocessed data for line {line}")
+            ctx.logger(f"Could not get preprocessed data for line {line}")
             continue
 
         # get track data for line

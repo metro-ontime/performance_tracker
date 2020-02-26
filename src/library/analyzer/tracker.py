@@ -21,6 +21,7 @@ def getTrips(log):
             row.direction != previous_direction
             or row.vehicle_id != previous_vehicle
             or row.relative_position < previous_position
+            or row.relative_position - previous_position > 0.25
         ):
             trip_id += 1
         previous_direction = row.direction
