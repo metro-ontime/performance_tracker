@@ -3,6 +3,7 @@ from library.analyzer.process_vehicles import (
     get_track,
     process_raw_vehicles
 )
+from library.helpers.timing import get_appropriate_timetable, pandas_datetime_to_pendulum_datetime
 
 def process_vehicles(ctx, datetime):
     agency = ctx.config["METRO_AGENCY"]
