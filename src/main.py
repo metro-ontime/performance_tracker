@@ -9,7 +9,7 @@ from actions import ACTIONS
 def main(command, datetime=None):
     ctx = Context()
     if datetime is None:
-        datetime = pendulum.now()
+        datetime = pendulum.now(ctx.config["TIMEZONE"])
     else:
         try:
             datetime = pendulum.from_format(datetime, 'YYYY-MM-DD', tz=ctx.config["TIMEZONE"])
