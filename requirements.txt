@@ -4,7 +4,7 @@ pyproj
 pandas==0.25.0
 cartopy==0.17.0
 matplotlib==3.0.1
-geopandas==0.4.0
+geopandas==1.1.2
 geopy==1.17.0
 requests
 pendulum
